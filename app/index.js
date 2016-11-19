@@ -1,4 +1,5 @@
-import './index.scss';
+import './scss/reset.scss';
+import './scss/index.scss';
 import { h, render } from 'preact';
 import Router from 'preact-router';
 import Home from './components/home';

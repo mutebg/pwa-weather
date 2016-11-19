@@ -1,0 +1,81 @@
+.WeatherRow {
+  padding: 15px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin-top: -86px;
+  transition: transform 0.2s ease-out;
+
+  @for $i from 1 through 50 {
+    &:nth-of-type(#{$i}) {
+      z-index: $i + 10;
+    }
+  }
+
+  &:nth-of-type(1) {
+    border-top-color: transparent;
+    margin-top: 0;
+    }
+
+
+  &__main,
+  &__detail {
+    display: flex;
+  }
+
+  &__detail {
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
+
+  &__icon {
+    flex: 1 50px 0;
+    height: 50px;
+    width: 50px;
+    margin-right: 15px;
+  }
+
+  &__cont {
+    flex: auto;
+  }
+
+  &__top,
+  &__down {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__top {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  &__down {
+    font-size: 13px;
+    color: #efefef;
+  }
+
+
+  &__detail-row{
+    flex: 1;
+    text-align: center;
+    margin-top: 15px;
+  }
+
+  &__detail-icon {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    background: #ccc;
+  }
+
+  &__detail-value {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &__detail-label {
+    text-overflow: ellipsis;
+    font-size: 12px;
+  }
+}

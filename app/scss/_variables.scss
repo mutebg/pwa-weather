@@ -1,0 +1,45 @@
+//MEDIA QUERIES BREAKPOINTS
+// Usage:
+// @include respond-to('small') { ... }
+// @include respond-from('small') { ... }
+$breakpoints: (
+  'xs': 568px,
+  'sm': 768px,
+  'md': 1024px,
+  'lg': 1176px,
+  'xl': 1440px,
+);
+
+
+//COLOR PALETTE
+$colors: (
+  'dark': #24262c,
+);
+
+
+//TYPOGRAPHY
+// font sizes
+$font-size-base: 16px;
+$font-face: 'Source Sans Pro', times;
+
+// SCREEN
+$browser-height-context: 1080;
+$browser-width-context: 1920;
+
+
+//Z-INDEX LAYOUT
+//usage: z-index: z-index('modal');
+$z-indexes: (
+  'modal': 5000,
+  'header': 1000,
+  'default': 1,
+  'below': -1
+);
+
+
+$images_path: '../images/';
+$fonts_path: '../fonts/';
+$transition-time: 0.2s;
+
+// Font size default context
+$browser-font-context: 16;

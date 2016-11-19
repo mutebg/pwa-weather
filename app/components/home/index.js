@@ -42,7 +42,7 @@ class Home extends Component {
     return (
       <div class="Home">
         {
-          <Sky />
+          // <Sky />
         }
         {
           <Current { ...currently } />

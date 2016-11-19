@@ -4,7 +4,9 @@ var merge = require('webpack-merge');
 var webpack = require('webpack');
 var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var config = require('./app.config');
+
 
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
@@ -26,6 +28,10 @@ const common = {
     resolve: {
         extensions: ['', '.js', '.jsx']
     },
+    sassResources: [
+      './app/scss/_variables.scss',
+      './app/scss/_mixins.scss',
+    ],
     module: {
         preLoaders: [
         ],
@@ -41,13 +47,15 @@ const common = {
                 loaders: ['style', 'css'],
                 // Include accepts either a path or an array of paths.
                 include: PATHS.app
-            }, {
+            },{
                 test: /\.scss$/,
-                loaders: ['style', 'css', 'autoprefixer-loader', 'sass'],
+                loader: TARGET === 'build' ?
+                  ExtractTextPlugin.extract('style-loader', 'css-loader!autoprefixer-loader!sass-loader!sass-resources') :
+                  'style!css!autoprefixer-loader!sass!sass-resources',
                 // Include accepts either a path or an array of paths.
                 include: PATHS.app
             },{
-                test: /\.(png|jpg|svg)$/,
+                test: /\.(png|jpg|svg|woff2)$/,
                 //loader: "url-loader?limit=100000"
                 loader: "file-loader"
             },{
@@ -105,7 +113,11 @@ if (TARGET === 'build') {
           // new UglifyJsPlugin({
           //     minimize: true
           // }),
+          new webpack.optimize.UglifyJsPlugin(),
+          new webpack.optimize.DedupePlugin(),
           new CleanWebpackPlugin(['build']),
+          new ExtractTextPlugin("styles.[hash].css"),
+          new webpack.optimize.OccurenceOrderPlugin(),
         ]
     });
 }

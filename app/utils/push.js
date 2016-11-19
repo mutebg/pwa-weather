@@ -15,9 +15,16 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
-function sendSubscriptionToServer(subscription) {
-  console.log('subscription', JSON.stringify(subscription));
-  fetch( config.API_URL + 'push/subscribe?subscription=' + JSON.stringify(subscription) );
+function sendSubscriptionToServer(subscription, time) {
+  fetch( config.API_URL + 'push/subscribe?subscription=' + JSON.stringify(subscription) + '&time=' + time );
+}
+
+export function sendUpdateSubscriptionToServer(subscription, time) {
+  fetch( config.API_URL + 'push/update?subscription=' + JSON.stringify(subscription) + '&time=' + time );
+}
+
+function sendUnSubscriptionToServer(subscription) {
+  fetch( config.API_URL + 'push/unsubscribe?subscription=' + JSON.stringify(subscription) );
 }
 
 
@@ -57,6 +64,8 @@ export function unsubscribe(react) {
             pushEnabled: false,
           });
 
+          sendUnSubscriptionToServer(pushSubscription);
+
         }).catch(function(e) {
           // We failed to unsubscribe, this can lead to
           // an unusual state, so may be best to remove
@@ -78,8 +87,6 @@ export function unsubscribe(react) {
 }
 
 export function subscribe(react) {
-  console.log('subscribe is called');
-
   // Disable the button so it can't be changed while
   // we process the permission request
   react.setState({
@@ -101,12 +108,13 @@ export function subscribe(react) {
           pushEnabled: true,
           pushButtonDisabled: false,
           pushButtonLabel: 'Disable Push Messages',
+          pushSubscription: subscription,
         });
 
         // TODO: Send the subscription subscription.endpoint
         // to your server and save it to send a push message
         // at a later date
-        return sendSubscriptionToServer(subscription);
+        return sendSubscriptionToServer(subscription, react.state.notificationTime);
       })
       .catch(function(e) {
         if (Notification.permission === 'denied') {
@@ -189,7 +197,11 @@ export function initialiseState( react ) {
 
         console.log('update?');
         // Keep your server in sync with the latest subscription
-        sendSubscriptionToServer(subscription);
+        sendUpdateSubscriptionToServer(subscription, react.state.notificationTime);
+
+        react.setState({
+          pushSubscription: subscription
+        });
 
         // Set your UI to show they have subscribed for
         // push messages
