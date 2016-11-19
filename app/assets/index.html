@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+  <meta name="viewport" content="user-scalable=0, width=device-width, initial-scale=1.0,  minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="manifest" href="/manifest.json">
+  <script src="https://darksky.net/js/lib/skycons.js"></script>
+
+  <% for (var css in htmlWebpackPlugin.files.css) { %>
+  <link href="<%=htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
+  <% } %>
+
+</head>
+<body>
+  <% if (htmlWebpackPlugin.options.appMountId) { %>
+  <div id="<%=htmlWebpackPlugin.options.appMountId%>"></div>
+  <% } %>
+
+
+
+
+  <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+  <!--
+  <script src="<%=htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+  -->
+  <% } %>
+
+
+
+
+  <% if (htmlWebpackPlugin.options.devServer) { %>
+  <script src="<%=htmlWebpackPlugin.options.devServer%>/webpack-dev-server.js"></script>
+  <% } %>
+
+  <% if (htmlWebpackPlugin.options.sw) { %>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(function(registration) {
+        console.log('SW registerd')
+      }).catch(function(error) {
+        console.log('SW fail to register', error);
+      });
+    }
+  </script>
+  <% } %>
+</body>
+</html>
