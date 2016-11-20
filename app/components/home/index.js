@@ -7,6 +7,7 @@ import Daily from '../daily';
 import config from '../../config';
 import Store from '../../utils/store';
 import {get} from '../../utils/api';
+import { getCurrentPosition } from '../../utils/location';
 
 class Home extends Component {
 
@@ -19,7 +20,9 @@ class Home extends Component {
 
   async loadData() {
     try {
-      const data = await get('weather');
+      const {latitude, longitude} = await getCurrentPosition();
+      Store.set({latitude, longitude});
+      const data = await get(`weather?latitude=${latitude}&longitude=${longitude}`);
       this.setState({
         data
       }, () => {

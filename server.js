@@ -23,7 +23,9 @@ app.use(function (err, req, res, next) {
 })
 
 app.get('/weather', (req, res) => {
-  request('https://api.darksky.net/forecast/81ce376a0c64563f03a4c92cc3268a92/52.379473,5.215532?exclude=minutely,flags&units=si', (error, response, body) => {
+  var lat = req.query['latitude'] || 52.379473;
+  var lng = req.query['longitude'] || 5.215532;
+  request(`https://api.darksky.net/forecast/81ce376a0c64563f03a4c92cc3268a92/${lat},${lng}?exclude=minutely,flags&units=si`, (error, response, body) => {
     if (!error && response.statusCode == 200) {
       res.json( JSON.parse(body) );
     }
