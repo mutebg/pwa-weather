@@ -26,22 +26,24 @@
   global.addEventListener('activate', event => event.waitUntil(global.clients.claim()));
 
   global.addEventListener('push', (event) => {
-    console.log('push t', event.data.text() );
-    console.log('Received a push message', event);
+    event.waitUntil( fetch('http://localhost:5000/weather?location=Almere,NL')
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        let title = data.currently.summary + ' ' + Math.round(data.currently.temperature) + '°';
+        let body = 'Feels ' + Math.round(data.currently.apparentTemperature) + ' °';
+        if ( data.currently.precipProbability ) {
+          body = Math.round(data.currently.precipProbability * 100) + '% ' + data.currently.precipType + ' - ' + body;
+        }
+        let icon = 'http://downloadicons.net/sites/default/files/rain-icon-46110.png';
 
-    var title = 'Your daily weather update';
-    var body = 'Open weather aplication to see forecast for today';
-    if ( event.data.text() ) {
-      body =  event.data.text();
-    }
-    //var icon = '/images/icon-192x192.png';
-    //var tag = 'simple-push-demo-notification-tag';
-
-    event.waitUntil(
-      self.registration.showNotification(title, {
-        body: body,
-        //icon: icon,
-        //tag: tag
+        self.registration.showNotification( title, {
+          body: body,
+          icon: icon
+        });
+      })
+      .catch(function(err) {
+        console.log('err');
+        console.log(err);
       })
     );
   });

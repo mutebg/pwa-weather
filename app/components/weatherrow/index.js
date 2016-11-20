@@ -63,7 +63,7 @@ class WeatherRow extends Component {
           </div>
           <div class="WeatherRow__detail-row">
             <div class="WeatherRow__detail-icon"></div>
-            <div class="WeatherRow__detail-value">{ Math.round(rest.pressure)} hPa</div>
+            <div class="WeatherRow__detail-value">{ Math.round(rest.pressure)}hPa</div>
             <div class="WeatherRow__detail-label">Pressure</div>
           </div>
         </div>

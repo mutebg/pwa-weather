@@ -1,20 +1,5 @@
 import config from '../config';
 
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
-
 function sendSubscriptionToServer(subscription, time) {
   fetch( config.API_URL + 'push/subscribe?subscription=' + JSON.stringify(subscription) + '&time=' + time );
 }
@@ -29,7 +14,6 @@ function sendUnSubscriptionToServer(subscription) {
 
 
 export function unsubscribe(react) {
-  console.log('unsubscribe is called');
   react.setState({
     pushButtonDisabled: true,
   });
@@ -94,13 +78,8 @@ export function subscribe(react) {
   });
 
   navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
-
-    const convertedVapidKey = urlBase64ToUint8Array(config.vapidPublicKey);
-    console.log(convertedVapidKey);
-
     serviceWorkerRegistration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: convertedVapidKey
     }).then(function(subscription) {
         // The subscription was successful
 
@@ -143,8 +122,6 @@ export function subscribe(react) {
 
 // Once the service worker is registered set the initial state
 export function initialiseState( react ) {
-  console.log('start...');
-
   // Are Notifications supported in the service worker?
   if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
     react.setState({
@@ -189,13 +166,11 @@ export function initialiseState( react ) {
         });
 
         if (!subscription) {
-          console.log('im ok with that, are you?');
           // We aren’t subscribed to push, so set UI
           // to allow the user to enable push
           return;
         }
 
-        console.log('update?');
         // Keep your server in sync with the latest subscription
         sendUpdateSubscriptionToServer(subscription, react.state.notificationTime);
 

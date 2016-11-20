@@ -113,7 +113,6 @@ if (TARGET === 'build') {
           // new UglifyJsPlugin({
           //     minimize: true
           // }),
-          new webpack.optimize.UglifyJsPlugin(),
           new webpack.optimize.DedupePlugin(),
           new CleanWebpackPlugin(['build']),
           new ExtractTextPlugin("styles.[hash].css"),

@@ -39,6 +39,10 @@ class Home extends Component {
       return <div>Loading</div>
     }
 
+    currently.sunriseTime = daily.data[0].sunriseTime;
+    currently.sunsetTime = daily.data[0].sunsetTime;
+    currently.moonPhase = daily.data[0].moonPhase;
+
     return (
       <div class="Home">
         {

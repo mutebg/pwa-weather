@@ -40,8 +40,8 @@ class Hourly extends Component {
       item.isOpen = state.selected.includes(index);
       item.temp = Math.round(item.temperature) + '°';
       item.title = date.getHours() + ':00';
-      item.addon =  `Feels ${ Math.round(item.apparentTemperature)}°`;
       item.id = 'h-' + index;
+      item.addon =  `Feels ${ Math.round(item.apparentTemperature)}°`;
       if ( item.precipProbability ) {
         item.addon = `${Math.round(item.precipProbability * 100)}% ${item.precipType} - ` + item.addon;
       }
