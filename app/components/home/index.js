@@ -5,23 +5,25 @@ import Current from '../current';
 import Hourly from '../hourly';
 import Daily from '../daily';
 import config from '../../config';
+import Store from '../../utils/store';
+import {get} from '../../utils/api';
 
 class Home extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      data: {},
+      data: Store.get('weather'),
     }
   }
 
   async loadData() {
     try {
-      const url = config.API_URL + 'weather';
-      const response = await fetch( url );
-      const data = await response.json();
+      const data = await get('weather');
       this.setState({
         data
+      }, () => {
+        Store.set('weather', this.state.data);
       });
     } catch (err) {
       console.log(err);
@@ -33,11 +35,11 @@ class Home extends Component {
   }
 
   render(props, state) {
-    let { currently, daily, hourly } = state.data;
-
-    if ( ! currently ) {
+    if ( !state.data ) {
       return <div>Loading</div>
     }
+
+    let { currently, daily, hourly } = state.data;
 
     currently.sunriseTime = daily.data[0].sunriseTime;
     currently.sunsetTime = daily.data[0].sunsetTime;

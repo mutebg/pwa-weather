@@ -22,7 +22,7 @@
 
   &__summery {
     font-size: 16px;
-    color: #efefef;
+    color: color('light-darken');
     margin-top: 5px;
   }
 
@@ -36,7 +36,7 @@
 
   &__row {
     display: flex;
-    margin-top: 10px;
+    margin-top: 30px;
   }
 
   &__col {
@@ -58,6 +58,6 @@
 
   &__col-label {
     font-size: 13px;
-    color: #efefef;
+    color: color('light-darken');
   }
 }

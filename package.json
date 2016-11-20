@@ -59,6 +59,11 @@
     "preact": "^6.4.0",
     "preact-router": "^2.3.2",
     "rxjs": "^5.0.0-rc.3",
-    "sw-toolbox": "^3.4.0"
+    "sw-toolbox": "^3.4.0",
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "request": "^2.78.0",
+    "web-push": "^3.2.0"
   }
 }

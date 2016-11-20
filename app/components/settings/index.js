@@ -48,17 +48,18 @@ class Settings extends Component {
     console.log('state', state);
     return (
       <div class="Settings">
-        <div class="Settings__title">
-          <label>Daily notifications with weweather</label>
-          <button disabled={state.pushButtonDisabled} onClick={ () => this.togglePushSubscribe() }>
+        <div class="Settings__row">
+          <label class="Settings__header">Daily notifications with weweather</label>
+          <button class="btn" disabled={state.pushButtonDisabled} onClick={ () => this.togglePushSubscribe() }>
             {state.pushButtonLabel}
           </button>
         </div>
-        <button disabled={state.pushButtonDisabled}>
-          Notificaiton time: {state.notificationTime}
-        </button>
-        <p>Time: <input type="time" value={state.notificationTime} onChange={this.onNotificationTimeChange} /></p>
-
+        <div class="Settings__row Settings__row--time">
+          <button class="btn btn--primary" disabled={state.pushButtonDisabled}>
+            Notificaiton time: {state.notificationTime}
+          </button>
+          <input type="time" value={state.notificationTime} onChange={this.onNotificationTimeChange} class="Settings__time" disabled={state.pushButtonDisabled}/>
+        </div>
 
       </div>
     );

@@ -1,17 +1,13 @@
 import config from '../config';
-import axios from 'axios';
-
 
 const apiFetch = (url, method = 'get', data = {}) => {
-  let headers = {}
-
-  return axios({
+  const options = {
     method,
-    url,
-    data,
-    headers,
-    responseType: 'json',
-  });
+  };
+  if (data) {
+    options.body = JSON.stringify(data);
+  }
+  return fetch(url, options).then( response => response.json() );
 };
 
 // ajax get method
