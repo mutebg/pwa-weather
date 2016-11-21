@@ -4,17 +4,35 @@ var bodyParser     	= require("body-parser");
 var cors = require('cors');
 var request = require('request');
 var webpush = require('web-push');
-
+var mongoose = require('mongoose');
 
 app.set('strict routing', true);
 app.use( express.static(__dirname + '/public') );
 app.use( express.static(__dirname + '/build') );
-
 app.use( cors() );
 app.use( bodyParser.urlencoded({ extended: false }) );
 app.use( bodyParser.json() );
 
-var pushSubscription = null;
+const defaultsValues = {
+  time: '08:00',
+  location: {
+    latitude: 52.379473,
+    longitude: 5.215532,
+  },
+};
+
+mongoose.Promise = global.Promise;
+mongoose.connect('localhost', 'weather', 27017, {});
+
+var Schema = mongoose.Schema;
+var SubscriptionsModel = mongoose.model('subscriptions', new Schema({
+	id: mongoose.Schema.ObjectId,
+	time: { type: String, required: true, default: defaultsValues.time},
+	subscription: { type: Object, required: false},
+	location: { type: Object, required: true, default: defaultsValues.location },
+	created_at: { type: Date, default: Date.now }
+}));
+
 
 
 app.use(function (err, req, res, next) {
@@ -34,59 +52,97 @@ app.get('/weather', (req, res) => {
 
 //SUBSCRIBE FOR PUSH NOTIFICATIONS
 app.get('/push/subscribe', (req, res) => {
-
-  pushSubscription = JSON.parse( req.param('subscription') );
-  res.json({
-    subscription: pushSubscription
+  SubscriptionsModel.create({
+    time: req.query.time || '08:00',
+    subscription: JSON.parse( req.query.subscription ),
+    location: {
+      latitude: req.query['latitude'],
+      longitude: req.query['longitude']
+    }
+  }, (err, data) => {
+    if (err) {
+      res.status(400).send(err.message);
+    } else {
+      res.status(200).send({success: true});
+    }
   });
 });
 
 //UNSUBSCRIBE FOR PUSH NOTIFICATIONS
 app.get('/push/unsubscribe', (req, res) => {
-  pushSubscription = JSON.parse( req.param('subscription') );
-  res.json({
-    ok: 1
+  console.log({subscription: JSON.parse(req.query.subscription)});
+  SubscriptionsModel.findOneAndRemove({'subscription.endpoint': JSON.parse(req.query.subscription).endpoint}, (err, data) => {
+    console.log({data});
+    if (err) {
+      res.status(400).send(err.message);
+    } else {
+      res.status(200).send({success: true});
+    }
   });
 });
 
 //UPDATE SUBSCRIBTION, USEALY TIME
 app.get('/push/update', (req, res) => {
-  pushSubscription = JSON.parse( req.param('subscription') );
-  res.json({
-    subscription: pushSubscription
+  var update = {
+    subscription: req.query.subscription,
+    time: req.query.time || '08:00',
+    location: {
+      latitude: req.query['latitude'],
+      longitude: req.query['longitude']
+    }
+  };
+  SubscriptionsModel.findOneAndUpdate({'subscription.endpoint': JSON.parse(req.query.subscription).endpoint},
+    update, {upsert: true, new: true, runValidators: true}, (err, data) => {
+    if (err) {
+      res.status(400).send(err.message);
+    }
+    res.status(200).send({success: true});
   });
+});
+
+app.get('/all', (req,res) => {
+  SubscriptionsModel.find()
+		.exec( function(err, subs ){
+			if ( err ) {
+        res.status(400).send(err.message);
+			}
+
+      res.json({
+        subscriptions: subs
+      });
+		});
 });
 
 //SEND PUSH NOTIFICATION
 app.get('/push/send', (req, res) => {
-  //var vapidKeys = webpush.generateVAPIDKeys();
-  var vapidKeys = {
-    publicKey: 'BMxGQ2HnBS1e8tiVsi-5-zRbKW8wlheQtcSK_n0P9bgEXeLoqS9dXdcsAo8MhIsPfoej-snuKYrVgxdR-KRpI5A',
-    privateKey: 'Cgyon7ZJ57K7HbgSV8M4UUOYi3k06jItQdYOcwjR8jk'
-  };
-
-  //webpush.setGCMAPIKey('AIzaSyA_gnR_0TogzfT0Rzpwd9eUMCKOvIs8l9g');
   webpush.setGCMAPIKey('AAAAlYY_UVo:APA91bHLItfywkjlRCuttvY78ly0Z-0_xtVgvV1WeOKdPLv79JxhRH0nxCu7-rdrFlJXfsa_W8R27CAfKiN2_z2cobQNpfkvRyNiKyxmASt9Rzx5rwOjIMTJuYSjsF3Dl9Ep-F6BSqI5vI1nI0bXKatkQurm_Ovd1w');
-  // webpush.setVapidDetails(
-  //   'mailto:mutebg@gmail.com',
-  //   vapidKeys.publicKey,
-  //   vapidKeys.privateKey
-  // );
 
-  // This is the same output of calling JSON.stringify on a PushSubscription
-  console.log(pushSubscription);
+  SubscriptionsModel
+    .find()
+    .exec( function(err, subs ){
+			if ( err ) {
+        res.status(400).send(err.message);
+			}
 
-  webpush.sendNotification(pushSubscription, "demo").then(() => {
-      res.status(200).send({success: true});
-  })
-  .catch((err) => {
-    console.log('error', err);
-    if (err.statusCode) {
-      res.status(err.statusCode).send(err.body);
-    } else {
-      res.status(400).send(err.message);
-    }
-  });
+      console.log(subs);
+
+      subs.forEach( sub => {
+        webpush.sendNotification(sub.subscription).then(() => {
+        })
+        .catch((err) => {
+          console.log('push send error', err);
+          if (err.statusCode) {
+            res.status(err.statusCode).send(err.body);
+          } else {
+            res.status(400).send(err.message);
+          }
+        });
+      })
+
+      res.json({
+        subscriptions: subs
+      });
+		});
 });
 
 
