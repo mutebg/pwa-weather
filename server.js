@@ -5,6 +5,7 @@ var cors = require('cors');
 var request = require('request');
 var webpush = require('web-push');
 var mongoose = require('mongoose');
+var _ = require('lodash');
 
 app.set('strict routing', true);
 app.use( express.static(__dirname + '/public') );
@@ -29,7 +30,6 @@ var SubscriptionsModel = mongoose.model('subscriptions', new Schema({
 	id: mongoose.Schema.ObjectId,
 	time: { type: String, required: true, default: defaultsValues.time},
 	subscription: { type: Object, required: false},
-	location: { type: Object, required: true, default: defaultsValues.location },
 	created_at: { type: Date, default: Date.now }
 }));
 
@@ -55,10 +55,6 @@ app.get('/push/subscribe', (req, res) => {
   SubscriptionsModel.create({
     time: req.query.time || '08:00',
     subscription: JSON.parse( req.query.subscription ),
-    location: {
-      latitude: req.query['latitude'],
-      longitude: req.query['longitude']
-    }
   }, (err, data) => {
     if (err) {
       res.status(400).send(err.message);
@@ -86,10 +82,6 @@ app.get('/push/update', (req, res) => {
   var update = {
     subscription: req.query.subscription,
     time: req.query.time || '08:00',
-    location: {
-      latitude: req.query['latitude'],
-      longitude: req.query['longitude']
-    }
   };
   SubscriptionsModel.findOneAndUpdate({'subscription.endpoint': JSON.parse(req.query.subscription).endpoint},
     update, {upsert: true, new: true, runValidators: true}, (err, data) => {
@@ -100,50 +92,30 @@ app.get('/push/update', (req, res) => {
   });
 });
 
-app.get('/all', (req,res) => {
-  SubscriptionsModel.find()
-		.exec( function(err, subs ){
-			if ( err ) {
-        res.status(400).send(err.message);
-			}
-
-      res.json({
-        subscriptions: subs
-      });
-		});
-});
-
-//SEND PUSH NOTIFICATION
-app.get('/push/send', (req, res) => {
+app.get('/run', (req,res) => {
   webpush.setGCMAPIKey('AAAAlYY_UVo:APA91bHLItfywkjlRCuttvY78ly0Z-0_xtVgvV1WeOKdPLv79JxhRH0nxCu7-rdrFlJXfsa_W8R27CAfKiN2_z2cobQNpfkvRyNiKyxmASt9Rzx5rwOjIMTJuYSjsF3Dl9Ep-F6BSqI5vI1nI0bXKatkQurm_Ovd1w');
 
-  SubscriptionsModel
-    .find()
-    .exec( function(err, subs ){
-			if ( err ) {
-        res.status(400).send(err.message);
-			}
+  setInterval( () => {
+    var currentDate = new Date();
+    var currentTime = _.padStart(currentDate.getHours(), 2, 0) + ':' + _.padStart(currentDate.getMinutes(), 2, 0);
+    console.log('loop over time:', currentTime);
 
-      console.log(subs);
-
-      subs.forEach( sub => {
-        webpush.sendNotification(sub.subscription).then(() => {
-        })
-        .catch((err) => {
-          console.log('push send error', err);
-          if (err.statusCode) {
-            res.status(err.statusCode).send(err.body);
-          } else {
-            res.status(400).send(err.message);
-          }
+    SubscriptionsModel.find({time: currentTime})
+  		.exec( (err, subs ) => {
+  			subs.forEach( item => {
+          webpush.sendNotification(item.subscription).then( () => {
+            console.log('its fine');
+          })
+          .catch((err) => {
+            console.log('push error', err);
+          });
         });
-      })
-
-      res.json({
-        subscriptions: subs
       });
-		});
+  }, 1000 * 60);
+
+  res.status(200).send({success: 'process is running...'});
 });
+
 
 
 var server = app.listen(5000, function() {
