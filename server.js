@@ -6,13 +6,16 @@ var request = require('request');
 var webpush = require('web-push');
 var mongoose = require('mongoose');
 var _ = require('lodash');
+var cookieParser = require('cookie-parser')
+
 
 app.set('strict routing', true);
 app.use( express.static(__dirname + '/public') );
 app.use( express.static(__dirname + '/build') );
-app.use( cors() );
+app.use( cors());
 app.use( bodyParser.urlencoded({ extended: false }) );
 app.use( bodyParser.json() );
+
 
 const defaultsValues = {
   time: '08:00',
@@ -22,39 +25,48 @@ const defaultsValues = {
   },
 };
 
+
 mongoose.Promise = global.Promise;
 mongoose.connect('localhost', 'weather', 27017, {});
+
 
 var Schema = mongoose.Schema;
 var SubscriptionsModel = mongoose.model('subscriptions', new Schema({
 	id: mongoose.Schema.ObjectId,
 	time: { type: String, required: true, default: defaultsValues.time},
+  location: { type: Object, required: true, default: defaultsValues.location },
 	subscription: { type: Object, required: false},
 	created_at: { type: Date, default: Date.now }
 }));
 
 
-
 app.use(function (err, req, res, next) {
  	// handle error
  	console.log(err);
-})
+});
+
 
 app.get('/weather', (req, res) => {
   var lat = req.query['latitude'] || 52.379473;
   var lng = req.query['longitude'] || 5.215532;
-  request(`https://api.darksky.net/forecast/81ce376a0c64563f03a4c92cc3268a92/${lat},${lng}?exclude=minutely,flags&units=si`, (error, response, body) => {
-    if (!error && response.statusCode == 200) {
-      res.json( JSON.parse(body) );
-    }
+  requestWeather(lat, lng).then(response => {
+    res.json( response );
+  }).catch( error => {
+    res.status(400).send(err.message);
   });
+
 });
+
 
 //SUBSCRIBE FOR PUSH NOTIFICATIONS
 app.get('/push/subscribe', (req, res) => {
   SubscriptionsModel.create({
-    time: req.query.time || '08:00',
+    time: req.query.time || defaultsValues.time,
     subscription: JSON.parse( req.query.subscription ),
+    location: {
+      latitude: req.query['latitude'],
+      longitude: req.query['longitude']
+    }
   }, (err, data) => {
     if (err) {
       res.status(400).send(err.message);
@@ -63,6 +75,7 @@ app.get('/push/subscribe', (req, res) => {
     }
   });
 });
+
 
 //UNSUBSCRIBE FOR PUSH NOTIFICATIONS
 app.get('/push/unsubscribe', (req, res) => {
@@ -77,11 +90,16 @@ app.get('/push/unsubscribe', (req, res) => {
   });
 });
 
+
 //UPDATE SUBSCRIBTION, USEALY TIME
 app.get('/push/update', (req, res) => {
   var update = {
     subscription: req.query.subscription,
-    time: req.query.time || '08:00',
+    time: req.query.time  || defaultsValues.time,
+    location: {
+      latitude: req.query['latitude'],
+      longitude: req.query['longitude']
+    }
   };
   SubscriptionsModel.findOneAndUpdate({'subscription.endpoint': JSON.parse(req.query.subscription).endpoint},
     update, {upsert: true, new: true, runValidators: true}, (err, data) => {
@@ -92,6 +110,7 @@ app.get('/push/update', (req, res) => {
   });
 });
 
+
 app.get('/run', (req,res) => {
   webpush.setGCMAPIKey('AAAAlYY_UVo:APA91bHLItfywkjlRCuttvY78ly0Z-0_xtVgvV1WeOKdPLv79JxhRH0nxCu7-rdrFlJXfsa_W8R27CAfKiN2_z2cobQNpfkvRyNiKyxmASt9Rzx5rwOjIMTJuYSjsF3Dl9Ep-F6BSqI5vI1nI0bXKatkQurm_Ovd1w');
 
@@ -100,15 +119,26 @@ app.get('/run', (req,res) => {
     var currentTime = _.padStart(currentDate.getHours(), 2, 0) + ':' + _.padStart(currentDate.getMinutes(), 2, 0);
     console.log('loop over time:', currentTime);
 
-    SubscriptionsModel.find({time: currentTime})
+    var findQuery = {time: currentTime};
+    SubscriptionsModel.find()
   		.exec( (err, subs ) => {
   			subs.forEach( item => {
-          webpush.sendNotification(item.subscription).then( () => {
-            console.log('its fine');
-          })
-          .catch((err) => {
-            console.log('push error', err);
-          });
+          if ( item.location ) {
+            requestWeather(item.location.latitude, item.location.longitude).then(weather => {
+              var data = {
+                title: weather.currently.summary + ' ' + Math.round(weather.currently.temperature) + '°',
+                body: 'Feels ' + Math.round(weather.currently.apparentTemperature) + ' °',
+                //icon: //TODO
+              }
+
+              if ( weather.currently.precipProbability ) {
+                data.body = Math.round(weather.currently.precipProbability * 100) + '% ' + weather.currently.precipType + ' - ' + data.body;
+              }
+              return webpush.sendNotification(item.subscription, JSON.stringify(data));
+            }).catch(error => {
+              console.log('push error', err);
+            });
+          }
         });
       });
   }, 1000 * 60);
@@ -117,9 +147,21 @@ app.get('/run', (req,res) => {
 });
 
 
-
 var server = app.listen(5000, function() {
 	var host = server.address().address
 	var port = server.address().port
 	console.log('Example app listening at http://%s:%s', host, port)
-})
+});
+
+
+function requestWeather(lat, lng) {
+  return new Promise( (resolve, reject) => {
+    request(`https://api.darksky.net/forecast/81ce376a0c64563f03a4c92cc3268a92/${lat},${lng}?exclude=minutely,flags&units=si`, (error, response, body) => {
+      if (!error && response.statusCode == 200) {
+        resolve( JSON.parse(body) )
+      } else {
+        reject(error);
+      }
+    });
+  });
+}

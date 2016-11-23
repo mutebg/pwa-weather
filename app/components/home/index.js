@@ -8,6 +8,7 @@ import config from '../../config';
 import Store from '../../utils/store';
 import {get} from '../../utils/api';
 import { getCurrentPosition } from '../../utils/location';
+import { sendUpdateSubscriptionToServer } from '../../utils/push';
 
 class Home extends Component {
 
@@ -20,14 +21,29 @@ class Home extends Component {
 
   async loadData() {
     try {
+      //get current user location
       const {latitude, longitude} = await getCurrentPosition();
-      Store.set({latitude, longitude});
+
+      //save current user location
+      Store.set('location', {latitude, longitude});
+
+      //get weather forecast for current location
       const data = await get(`weather?latitude=${latitude}&longitude=${longitude}`);
+
+      //update the state and render weather data
       this.setState({
         data
       }, () => {
+        //keep data in local storage, using it next time when app is open
         Store.set('weather', this.state.data);
+
+        //update the server with new location if user has push notifications enabled
+        let subscription = Store.get('subscription');
+        if ( subscription ) {
+          sendUpdateSubscriptionToServer( subscription, Store.get('time'), {latitude, longitude});
+        }
       });
+
     } catch (err) {
       console.log(err);
     }

@@ -1,6 +1,7 @@
 import './style.scss';
 import {h, Component} from 'preact';
 import { initialiseState, subscribe, unsubscribe, sendUpdateSubscriptionToServer } from '../../utils/push';
+import Store from '../../utils/store';
 
 class Settings extends Component {
 
@@ -12,6 +13,7 @@ class Settings extends Component {
       pushButtonLabel: 'Enable Push Messages',
       pushButtonDisabled: true,
       notificationTime: '08:00',
+      location: Store.get('location'),
     }
 
     this.togglePushSubscribe = this.togglePushSubscribe.bind(this);
@@ -39,7 +41,7 @@ class Settings extends Component {
     }, () => {
       if ( this.state.subscription ) {
         //update notification time on the server
-        sendUpdateSubscriptionToServer(this.state.subscription)
+        sendUpdateSubscriptionToServer(this.state.subscription, this.state.time);
       }
     });
   }

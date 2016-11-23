@@ -18,6 +18,7 @@
   // the default cache.
   //global.toolbox.router.default = global.toolbox.networkFirst;
 
+  //global.location = {};
 
   // Boilerplate to ensure our service worker takes control of the page as soon
   // as possible.
@@ -26,24 +27,21 @@
   global.addEventListener('activate', event => event.waitUntil(global.clients.claim()));
 
   global.addEventListener('push', (event) => {
-    event.waitUntil( fetch('http://localhost:5000/weather?location=Almere,NL')
-      .then(function(response) { return response.json(); })
-      .then(function(data) {
-        let title = data.currently.summary + ' ' + Math.round(data.currently.temperature) + '°';
-        let body = 'Feels ' + Math.round(data.currently.apparentTemperature) + ' °';
-        if ( data.currently.precipProbability ) {
-          body = Math.round(data.currently.precipProbability * 100) + '% ' + data.currently.precipType + ' - ' + body;
-        }
-        let icon = 'http://downloadicons.net/sites/default/files/rain-icon-46110.png';
+    var title = 'Your daily weather update';
+    var body = 'Open weather aplication to see forecast for today';
+    var icon = '';
+    if ( event.data.text() ) {
+      var msg = JSON.parse( event.data.text() );
+      title = msg.title;
+      body = msg.body;
+      icon = msg.icon;
 
-        self.registration.showNotification( title, {
-          body: body,
-          icon: icon
-        });
-      })
-      .catch(function(err) {
-        console.log('err');
-        console.log(err);
+    }
+
+    event.waitUntil(
+      self.registration.showNotification(title, {
+        body: body,
+        icon: icon,
       })
     );
   });
@@ -77,4 +75,14 @@
       ])
     );
   };
+
+  global.addEventListener('message', (event) => {
+    console.log('event data', event);
+    switch(event.data.type) {
+      case 'self.SAVE_LOCATION':
+        console.log('event data', event);
+        global.location = event.data.location;
+      break;
+    }
+  });
 })(self);
