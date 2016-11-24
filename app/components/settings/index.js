@@ -1,6 +1,7 @@
 import './style.scss';
 import {h, Component} from 'preact';
 import { initialiseState, subscribe, unsubscribe, sendUpdateSubscriptionToServer } from '../../utils/push';
+import { requestPayment } from '../../utils/payment';
 import Store from '../../utils/store';
 
 class Settings extends Component {
@@ -14,14 +15,24 @@ class Settings extends Component {
       pushButtonDisabled: true,
       notificationTime: '08:00',
       location: Store.get('location'),
+      showPaymentBtn: false,
+      successPayment: false,
+      paymentData: null,
     }
 
     this.togglePushSubscribe = this.togglePushSubscribe.bind(this);
     this.onNotificationTimeChange = this.onNotificationTimeChange.bind(this);
+    this.makePayment = this.makePayment.bind(this);
   }
 
   componentDidMount() {
     initialiseState( this );
+
+    if ( 'PaymentRequest' in window ) {
+      this.setState({
+        showPaymentBtn: true,
+      })
+    }
   }
 
   togglePushSubscribe() {
@@ -46,6 +57,20 @@ class Settings extends Component {
     });
   }
 
+  makePayment() {
+    requestPayment().then( e => {
+      this.setState({
+        successPayment: true,
+        paymentData: e,
+      });
+    }).catch(err => {
+      this.setState({
+        successPayment: true,
+        paymentData: err,
+      });
+    });
+  }
+
   render(props, state) {
     console.log('state', state);
     return (
@@ -62,9 +87,40 @@ class Settings extends Component {
           </button>
           <input type="time" value={state.notificationTime} onChange={this.onNotificationTimeChange} class="Settings__time" disabled={state.pushButtonDisabled}/>
         </div>
+        { this.renderPaymentButton() }
+        { this.renderPaymentMessage() }
 
       </div>
     );
+  }
+
+  renderPaymentButton() {
+    if ( this.state.showPaymentBtn ) {
+      return (
+        <div class="Settings__row">
+          <label class="Settings__header">Support the project, make donation:</label>
+          <button class="btn"  onClick={ this.makePayment }>
+            Donate 5 EUR
+          </button>
+        </div>
+      )
+    }
+    return null;
+  }
+
+  renderPaymentMessage() {
+    if ( this.state.paymentData ) {
+      let details = this.state.paymentData.details;
+      details.cardNumber = 'XXXX-XXXX-XXXX-' + details.cardNumber.substr(12);
+      details.cardSecurityCode = '***';
+
+      let string = JSON.stringify({
+        methodName: this.state.paymentData.methodName,
+        details: details
+      }, undefined, 2);
+      return <pre>{string}</pre>;
+    }
+    return null;
   }
 }
 
