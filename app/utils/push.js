@@ -1,14 +1,13 @@
 import config from '../config';
-import Store from './store';
 
-function sendSubscriptionToServer(subscription, time, location) {
+function sendSubscriptionToServer(subscription, time) {
   fetch( config.API_URL + 'push/subscribe?subscription=' + JSON.stringify(subscription) +
-    '&time=' + time + '&latitude=' + location.latitude + '&longitude=' + location.longitude );
+    '&time=' + time );
 }
 
-export function sendUpdateSubscriptionToServer(subscription, time, location) {
+export function sendUpdateSubscriptionToServer(subscription, time) {
   fetch( config.API_URL + 'push/update?subscription=' + JSON.stringify(subscription) +
-    '&time=' + time + '&latitude=' + location.latitude + '&longitude=' + location.longitude );
+    '&time=' + time );
 }
 
 function sendUnSubscriptionToServer(subscription) {
@@ -96,8 +95,7 @@ export function subscribe(react) {
         // TODO: Send the subscription subscription.endpoint
         // to your server and save it to send a push message
         // at a later date
-        Store.set('subscription', subscription);
-        return sendSubscriptionToServer(subscription, react.state.notificationTime, react.state.location);
+        return sendSubscriptionToServer(subscription, react.state.notificationTime);
       })
       .catch(function(e) {
         if (Notification.permission === 'denied') {
@@ -176,8 +174,7 @@ export function initialiseState( react ) {
         }
 
         // Keep your server in sync with the latest subscription
-        Store.set('subscription', subscription);
-        sendUpdateSubscriptionToServer(subscription, react.state.notificationTime, react.state.location);
+        sendUpdateSubscriptionToServer(subscription, react.state.notificationTime);
 
         react.setState({
           pushSubscription: subscription

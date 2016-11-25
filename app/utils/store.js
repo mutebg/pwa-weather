@@ -1,15 +1,27 @@
+import idb from  'idb-keyval';
+
 class Store {
 
   constructor() {
-    this.store = localStorage;
+    this.store = idb;
   }
 
   set(key, val) {
-    this.store.setItem(key, JSON.stringify(val));
+    this.store.set(key, JSON.stringify(val));
   }
 
   get(key) {
-    return JSON.parse(this.store.getItem(key));
+    return this.store.get(key).then(val => {
+      if ( val ) {
+        return JSON.parse(val);
+      } else {
+        return null;
+      }
+    });
+  }
+
+  delete(key) {
+    this.store.delete(key);
   }
 }
 

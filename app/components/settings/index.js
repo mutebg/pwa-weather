@@ -14,7 +14,6 @@ class Settings extends Component {
       pushButtonLabel: 'Enable Push Messages',
       pushButtonDisabled: true,
       notificationTime: '08:00',
-      location: Store.get('location'),
       showPaymentBtn: false,
       successPayment: false,
       paymentData: null,

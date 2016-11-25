@@ -4,6 +4,7 @@
 
   // Load the sw-tookbox library.
   importScripts('sw-toolbox.js'); // Update path to match your own setup
+  importScripts('idb-keyval.js')
 
   //global.toolbox.options.cache.name = 'sw-cache-<%= hash %>';
 
@@ -26,37 +27,63 @@
 
   global.addEventListener('activate', event => event.waitUntil(global.clients.claim()));
 
+  // global.addEventListener('push', (event) => {
+  //   var title = 'Your daily weather update';
+  //   var body = 'Open weather aplication to see forecast for today';
+  //   var icon = '';
+  //   if ( event.data.text() ) {
+  //     var msg = JSON.parse( event.data.text() );
+  //     title = msg.title;
+  //     body = msg.body;
+  //     icon = msg.icon;
+  //
+  //   }
+  //
+  //   event.waitUntil(
+  //     self.registration.showNotification(title, {
+  //       body: body,
+  //       icon: icon,
+  //     })
+  //   );
+  // });
   global.addEventListener('push', (event) => {
-    var title = 'Your daily weather update';
-    var body = 'Open weather aplication to see forecast for today';
-    var icon = '';
-    if ( event.data.text() ) {
-      var msg = JSON.parse( event.data.text() );
-      title = msg.title;
-      body = msg.body;
-      icon = msg.icon;
-
-    }
-
     event.waitUntil(
-      self.registration.showNotification(title, {
-        body: body,
-        icon: icon,
+      idbKeyval.get('location').then( location => {
+        location = JSON.parse(location);
+        const url = 'http://localhost:5000/weather?latitude=' + location.latitude + '&longitude=' + location.longitude;
+        return fetch(url)
+          .then( response => response.json() )
+          .then( data => {
+            let title = data.currently.summary + ' ' + Math.round(data.currently.temperature) + '°';
+            let body = 'Feels ' + Math.round(data.currently.apparentTemperature) + ' °';
+            if ( data.currently.precipProbability ) {
+              body = Math.round(data.currently.precipProbability * 100) + '% ' + data.currently.precipType + ' - ' + body;
+            }
+            let icon = 'http://downloadicons.net/sites/default/files/rain-icon-46110.png';
+
+            self.registration.showNotification( title, {
+              body: body,
+              icon: icon
+            });
+          })
+          .catch( err => {
+            console.log(err);
+          });
       })
-    );
+    )
   });
 
-  global.onnotificationclick = evt => {
+  global.onnotificationclick = event => {
     const url = 'http://localhost:8080/';
 
     // Android doesn't close the notification when you click it
     // See http://crbug.com/463146
-    evt.notification.close();
+    event.notification.close();
 
     // Check if there's already a tab open with this URL.
     // If yes: focus on the tab.
     // If no: open a tab with the URL.
-    evt.waitUntil(
+    event.waitUntil(
       Promise.all([
         clients.matchAll({
           type: 'window'

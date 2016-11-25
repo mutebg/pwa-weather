@@ -34,7 +34,6 @@ var Schema = mongoose.Schema;
 var SubscriptionsModel = mongoose.model('subscriptions', new Schema({
 	id: mongoose.Schema.ObjectId,
 	time: { type: String, required: true, default: defaultsValues.time},
-  location: { type: Object, required: true, default: defaultsValues.location },
 	subscription: { type: Object, required: false},
 	created_at: { type: Date, default: Date.now }
 }));
@@ -63,10 +62,6 @@ app.get('/push/subscribe', (req, res) => {
   SubscriptionsModel.create({
     time: req.query.time || defaultsValues.time,
     subscription: JSON.parse( req.query.subscription ),
-    location: {
-      latitude: req.query['latitude'],
-      longitude: req.query['longitude']
-    }
   }, (err, data) => {
     if (err) {
       res.status(400).send(err.message);
@@ -79,9 +74,7 @@ app.get('/push/subscribe', (req, res) => {
 
 //UNSUBSCRIBE FOR PUSH NOTIFICATIONS
 app.get('/push/unsubscribe', (req, res) => {
-  console.log({subscription: JSON.parse(req.query.subscription)});
   SubscriptionsModel.findOneAndRemove({'subscription.endpoint': JSON.parse(req.query.subscription).endpoint}, (err, data) => {
-    console.log({data});
     if (err) {
       res.status(400).send(err.message);
     } else {
@@ -96,10 +89,6 @@ app.get('/push/update', (req, res) => {
   var update = {
     subscription: req.query.subscription,
     time: req.query.time  || defaultsValues.time,
-    location: {
-      latitude: req.query['latitude'],
-      longitude: req.query['longitude']
-    }
   };
   SubscriptionsModel.findOneAndUpdate({'subscription.endpoint': JSON.parse(req.query.subscription).endpoint},
     update, {upsert: true, new: true, runValidators: true}, (err, data) => {
@@ -123,22 +112,7 @@ app.get('/run', (req,res) => {
     SubscriptionsModel.find()
   		.exec( (err, subs ) => {
   			subs.forEach( item => {
-          if ( item.location ) {
-            requestWeather(item.location.latitude, item.location.longitude).then(weather => {
-              var data = {
-                title: weather.currently.summary + ' ' + Math.round(weather.currently.temperature) + '°',
-                body: 'Feels ' + Math.round(weather.currently.apparentTemperature) + ' °',
-                //icon: //TODO
-              }
-
-              if ( weather.currently.precipProbability ) {
-                data.body = Math.round(weather.currently.precipProbability * 100) + '% ' + weather.currently.precipType + ' - ' + data.body;
-              }
-              return webpush.sendNotification(item.subscription, JSON.stringify(data));
-            }).catch(error => {
-              console.log('push error', err);
-            });
-          }
+          return webpush.sendNotification(item.subscription);
         });
       });
   }, 1000 * 60);

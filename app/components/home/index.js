@@ -15,11 +15,11 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: Store.get('weather'),
+      data: null,
     }
   }
 
-  async loadData() {
+  async loadRemoteData() {
     try {
       //get current user location
       const {latitude, longitude} = await getCurrentPosition();
@@ -36,12 +36,6 @@ class Home extends Component {
       }, () => {
         //keep data in local storage, using it next time when app is open
         Store.set('weather', this.state.data);
-
-        //update the server with new location if user has push notifications enabled
-        let subscription = Store.get('subscription');
-        if ( subscription ) {
-          sendUpdateSubscriptionToServer( subscription, Store.get('time'), {latitude, longitude});
-        }
       });
 
     } catch (err) {
@@ -50,7 +44,11 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.loadData();
+    //load local data
+    Store.get('weather').then(data => this.setState({data}));
+
+    //load remote data
+    this.loadRemoteData();
   }
 
   render(props, state) {

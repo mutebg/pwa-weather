@@ -17,6 +17,7 @@ var sw = swCompile({
 
 //copy SW-toolbox script
 fs.createReadStream('./node_modules/sw-toolbox/sw-toolbox.js').pipe(fs.createWriteStream('./build/sw-toolbox.js'));
+fs.createReadStream('./node_modules/idb-keyval/dist/idb-keyval-min.js').pipe(fs.createWriteStream('./build/idb-keyval.js'));
 
 
 //save SW file
