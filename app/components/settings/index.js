@@ -75,7 +75,8 @@ class Settings extends Component {
     return (
       <div class="Settings">
         <div class="Settings__row">
-          <label class="Settings__header">Daily notifications with weweather</label>
+          <label class="Settings__header">Daily Summary</label>
+          <span class="Settings__sub">Deliver notification with the forecaast fot the day at selected time</span>
           <button class="btn" disabled={state.pushButtonDisabled} onClick={ () => this.togglePushSubscribe() }>
             {state.pushButtonLabel}
           </button>

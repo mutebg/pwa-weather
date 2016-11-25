@@ -25,11 +25,30 @@
 
 
 body {
-  padding: 15px;
-  background: color('dark');
+  background: color('bg');
   font-family: 'Roboto';
-  color: color('light');
+  color: color('dark');
 }
+
+.main {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.page {
+  flex: auto;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.Navigation {
+  flex: 1;
+  min-height: 60px;
+  max-height: 60px;
+  background: #e6e6e6;
+}
+
 
 .box {
   border-radius: 4px;
