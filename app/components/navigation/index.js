@@ -4,6 +4,8 @@ import {h, Component} from 'preact';
 class Sky extends Component {
   constructor(props) {
     super(props);
+
+    console.log(props);
   }
 
   render() {
@@ -19,7 +21,7 @@ class Sky extends Component {
           </a>
           <a class="Navigation__item" href="/daily">
             <span class="Navigation__icon"></span>
-            <span class="Navigation__label">10 Days</span>
+            <span class="Navigation__label">Week</span>
           </a>
           <a class="Navigation__item" href="/settings">
             <span class="Navigation__icon"></span>

@@ -5,17 +5,14 @@
     text-align: center;
     text-transform: uppercase;
     margin-top: 10px;
+    line-height: 1.2;
   }
 
   &__icon {
-    height: 180px;
-    width: 180px;
-    line-height: 200px;
-    border-radius: 50%;
-    background: color('primary');
-    text-align: center;
+    height: 200px;
+    width: 200px;
     display: block;
-    margin: 25px auto;
+    margin: 5px auto 35px auto;
   }
 
   &__more {

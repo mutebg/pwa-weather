@@ -2,13 +2,14 @@ import './style.scss';
 import {h, Component} from 'preact';
 import { degToCompass } from '../../utils/wind';
 import HourlyBar from '../hourlybar';
+import Icon from '../icon';
 
 class Today extends Component {
   constructor(props) {
     super(props);
   }
 
-  render(props) {
+  render(props, state) {
     //const date = new Date(props.time * 1000);
 
     let { summary, icon, temperature, apparentTemperature, humidity,
@@ -26,7 +27,9 @@ class Today extends Component {
     return (
       <div class="Today">
         <div class="Today__summary">{summary}</div>
-        <div class="Today__icon">{icon}</div>
+        <div class="Today__icon">
+          <Icon name={icon} />
+        </div>
         <div class="Today__more">
           <div class="Today__temp">{ Math.round(temperature)}&deg;</div>
           <div class="Today__details">
