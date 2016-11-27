@@ -6,6 +6,8 @@ var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var config = require('./app.config');
+var BabiliPlugin = require("babili-webpack-plugin");
+
 
 
 const TARGET = process.env.npm_lifecycle_event;
@@ -50,7 +52,7 @@ const common = {
             },{
                 test: /\.scss$/,
                 loader: TARGET === 'build' ?
-                  ExtractTextPlugin.extract('style-loader', 'css-loader!autoprefixer-loader!sass-loader!sass-resources') :
+                  ExtractTextPlugin.extract('style-loader', 'css-loader?minimize!autoprefixer-loader!sass-loader!sass-resources') :
                   'style!css!autoprefixer-loader!sass!sass-resources',
                 // Include accepts either a path or an array of paths.
                 include: PATHS.app
@@ -110,9 +112,10 @@ if (TARGET === 'start' || !TARGET) {
 if (TARGET === 'build') {
     module.exports = merge(common, {
         plugins: [
-          new UglifyJsPlugin({
-            //minimize: true
-          }),
+          // new UglifyJsPlugin({
+          //   //minimize: true
+          // }),
+          new BabiliPlugin(),
           new webpack.optimize.DedupePlugin(),
           new CleanWebpackPlugin(['build']),
           new ExtractTextPlugin("styles.[hash].css"),
