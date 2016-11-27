@@ -1,8 +1,9 @@
 import './style.scss';
 import {h, Component} from 'preact';
-import { degToCompass } from '../../utils/wind';
 import HourlyBar from '../hourlybar';
 import Icon from '../icon';
+import Wind from '../wind';
+
 
 class Today extends Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class Today extends Component {
             </div>
             <div class="Today__details-row">
               <span>Wind</span>
-              <span>{ Math.round(windSpeed) }m/s</span>
+              <span>{ Math.round(windSpeed) }m/s<Wind rotate={windBearing} size="14"/></span>
             </div>
             <div class="Today__details-row">
               <span>Rain</span>

@@ -1,6 +1,6 @@
 import './style.scss';
 import {h, Component} from 'preact';
-import { degToCompass } from '../../utils/wind';
+import Wind from '../wind';
 
 class HourlyBar extends Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class HourlyBar extends Component {
         case 'precip':
           return <div>{Math.round(item.precipProbability * 100) }%</div>;
         case 'wind':
-          return <div>{Math.round(item.windSpeed)}m/s /</div>;
+          return <div>{Math.round(item.windSpeed)}m/s <Wind rotate={item.windBearing} size="14"/></div>;
         case 'humidity':
           return <div>{item.humidity}%</div>;
       }
