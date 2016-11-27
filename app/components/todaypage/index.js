@@ -43,7 +43,7 @@ class Today extends Component {
             </div>
             <div class="Today__details-row">
               <span>Wind</span>
-              <span>{windSpeed} {degToCompass(windBearing)}</span>
+              <span>{ Math.round(windSpeed) }m/s</span>
             </div>
             <div class="Today__details-row">
               <span>Rain</span>

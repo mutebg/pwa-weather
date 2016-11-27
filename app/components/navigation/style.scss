@@ -7,7 +7,7 @@
     text-transform: uppercase;
     color: inherit;
 
-    &--active {
+    &--selected {
       color: color('primary');
     }
   }
@@ -15,13 +15,11 @@
   &__icon {
     width: 26px;
     height: 26px;
-    background: #ccc;
     display: inline-block;
     margin: 8px 0 2px 0;
   }
 
   &__label {
-    font-size: 14px;
     display: block;
   }
 }

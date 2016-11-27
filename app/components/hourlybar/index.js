@@ -49,7 +49,7 @@ class HourlyBar extends Component {
         case 'precip':
           return <div>{Math.round(item.precipProbability * 100) }%</div>;
         case 'wind':
-          return <div>{item.windSpeed} /</div>;
+          return <div>{Math.round(item.windSpeed)}m/s /</div>;
         case 'humidity':
           return <div>{item.humidity}%</div>;
       }

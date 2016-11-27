@@ -1,3 +1,43 @@
-.Today {
-  
+.Daily {
+
+  &__item {
+    display: flex;
+    border-top: 1px solid color('gray');
+    padding: 15px 0;
+    align-items: center;
+  }
+
+  &__left {
+    flex: auto;
+  }
+
+  &__day {
+    margin-bottom: 5px;;
+    font-weight: bold;
+  }
+
+  &__summary {
+    color: color('dark');
+  }
+
+  &__icon {
+    min-width: 40px;
+    max-width: 40px;
+    height: 40px;
+    flex: 1;
+    margin-left: 10px;
+
+    .icon {
+      transform: scale(0.4);
+      transform: scale(0.2);
+      transform-origin: 0 0;
+    }
+  }
+
+  &__temp {
+    min-width: 40px;
+    max-width: 40px;
+    flex: 1;
+    text-align: right;
+  }
 }

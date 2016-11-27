@@ -7,6 +7,7 @@ import Daily from './components/dailypage';
 import Hourly from './components/hourlypage';
 import Settings from './components/settings';
 import Navigation from './components/navigation';
+import Icon from './components/icon';
 import Store from './utils/store';
 import {get} from './utils/api';
 import { getCurrentPosition } from './utils/location';
@@ -18,7 +19,10 @@ class Main extends Component {
     super(props);
     this.state = {
       data: null,
+      currentURL: '/',
     }
+
+    this.onRouteChange = this.onRouteChange.bind(this);
   }
 
   async loadRemoteData() {
@@ -53,9 +57,19 @@ class Main extends Component {
     this.loadRemoteData();
   }
 
+  onRouteChange() {
+    let pageElement = document.querySelector('.page');
+    if ( pageElement ) {
+      pageElement.scrollTop = 0;
+      this.setState({
+        currentURL: window.location.pathname,
+      })
+    }
+  }
+
   render(props, state) {
     if ( !state.data ) {
-      return <div>Loading</div>
+      return this.renderLoading();
     }
 
     let { currently, daily, hourly } = state.data;
@@ -67,16 +81,28 @@ class Main extends Component {
     return (
       <div class="main">
         <div class="page">
-          <Router>
+          <Router onChange={ this.onRouteChange }>
             <Today data={currently} path="/"  />
             <Hourly {...hourly} path="/hourly" />
             <Daily {...daily} path="/daily" />
             <Settings path="/settings" />
           </Router>
+          <p class="copyright">POWERED BY DARK SKY</p>
         </div>
-        <Navigation />
+        <Navigation currentURL={state.currentURL}/>
       </div>
-    )
+    );
+  }
+
+  renderLoading() {
+    return (
+      <div style={{marginTop: 25}}>
+        <div class="Today__summary">Loading</div>
+        <div class="Today__icon">
+          <Icon name="loading" />
+        </div>
+      </div>
+    );
   }
 }
 

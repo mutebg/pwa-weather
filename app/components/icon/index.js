@@ -42,6 +42,10 @@ class Icon extends Component {
 
       case 'sleet':
         return this.renderSleet();
+
+      default:
+        return this.renderLoading();
+
     }
   }
 
@@ -257,6 +261,16 @@ class Icon extends Component {
         <div class="v-line v-line--7"></div>
         <div class="v-line v-line--8 v-size-dot"></div>
         <div class="v-line v-line--9"></div>
+      </div>
+    )
+  }
+
+  renderLoading() {
+    return(
+      <div class="icon icon--loading">
+        <div class="circle circle-s"></div>
+        <div class="h-line h-line--4 h-size-h h-left"></div>
+        <div class="h-line h-line--5 h-size-h h-right"></div>
       </div>
     )
   }
