@@ -1,6 +1,7 @@
 var fs = require('fs');
 var _ = require('lodash');
 var exclude = ['sw.js', 'sw-toolbox.js', 'manifest.json'];
+var config = '../app/config.js';
 
 //read all files that have to be precashed
 var fileList = fs.readdirSync('./build').filter( function(item){
@@ -13,6 +14,7 @@ var swCompile = _.template(swTemplate);
 var sw = swCompile({
   precache: '"' + fileList.join('","') + '"',
   hash: new Date().getTime(),
+  api_url: config.API_URL,
 });
 
 //copy SW-toolbox script

@@ -50,7 +50,7 @@
     event.waitUntil(
       idbKeyval.get('location').then( location => {
         location = JSON.parse(location);
-        const url = 'http://localhost:5000/weather?latitude=' + location.latitude + '&longitude=' + location.longitude;
+        const url = '<%= api_url %>]/weather?latitude=' + location.latitude + '&longitude=' + location.longitude;
         return fetch(url)
           .then( response => response.json() )
           .then( data => {
@@ -59,11 +59,13 @@
             if ( data.currently.precipProbability ) {
               body = Math.round(data.currently.precipProbability * 100) + '% ' + data.currently.precipType + ' - ' + body;
             }
+
+            //TODO real icon
             let icon = 'http://downloadicons.net/sites/default/files/rain-icon-46110.png';
 
             self.registration.showNotification( title, {
               body: body,
-              icon: icon
+              //icon: icon
             });
           })
           .catch( err => {
@@ -102,14 +104,4 @@
       ])
     );
   };
-
-  global.addEventListener('message', (event) => {
-    console.log('event data', event);
-    switch(event.data.type) {
-      case 'self.SAVE_LOCATION':
-        console.log('event data', event);
-        global.location = event.data.location;
-      break;
-    }
-  });
 })(self);

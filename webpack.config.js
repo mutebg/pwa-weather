@@ -110,9 +110,9 @@ if (TARGET === 'start' || !TARGET) {
 if (TARGET === 'build') {
     module.exports = merge(common, {
         plugins: [
-          // new UglifyJsPlugin({
-          //     minimize: true
-          // }),
+          new UglifyJsPlugin({
+            //minimize: true
+          }),
           new webpack.optimize.DedupePlugin(),
           new CleanWebpackPlugin(['build']),
           new ExtractTextPlugin("styles.[hash].css"),
