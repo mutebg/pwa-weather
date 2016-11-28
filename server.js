@@ -113,7 +113,7 @@ app.get('/run', (req,res) => {
     console.log('loop over time:', currentTime);
 
     var findQuery = {time: currentTime};
-    SubscriptionsModel.find()
+    SubscriptionsModel.find(findQuery)
   		.exec( (err, subs ) => {
   			subs.forEach( item => {
           return webpush.sendNotification(item.subscription);

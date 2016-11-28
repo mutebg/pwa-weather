@@ -1,7 +1,7 @@
 {
   "lang": "en",
-  "short_name": "Weather",
-  "name": "Weather PWA",
+  "short_name": "WillRain",
+  "name": "Will Rain Today",
   "icons": [
     {
       "src": "./assets/icons/launcher-icon-2x.png",
@@ -23,6 +23,6 @@
   "start_url": "/#standalone",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#467acf",
+  "background_color": "#3374ff",
   "gcm_sender_id": "642202423642"
 }
