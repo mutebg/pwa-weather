@@ -25,9 +25,13 @@ const defaultsValues = {
   },
 };
 
+const dbOptions = {
+    user: process.env.DB_USER || '',
+    pass: process.env.DB_PASS || ''
+};
 
 mongoose.Promise = global.Promise;
-mongoose.connect('localhost', 'weather', 27017, {});
+mongoose.connect('localhost', 'weather', 27017, dbOptions);
 
 
 var Schema = mongoose.Schema;
