@@ -50,7 +50,7 @@
     event.waitUntil(
       idbKeyval.get('location').then( location => {
         location = JSON.parse(location);
-        const url = '<%= api_url %>/weather?latitude=' + location.latitude + '&longitude=' + location.longitude;
+        const url = '<%= api_url %>weather?latitude=' + location.latitude + '&longitude=' + location.longitude;
         return fetch(url)
           .then( response => response.json() )
           .then( data => {
