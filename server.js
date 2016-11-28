@@ -31,7 +31,7 @@ const dbOptions = {
 };
 
 mongoose.Promise = global.Promise;
-mongoose.connect('localhost', 'weather', 27017, dbOptions);
+mongoose.connect('localhost', 'stoyandelev', 27017, dbOptions);
 
 
 var Schema = mongoose.Schema;
