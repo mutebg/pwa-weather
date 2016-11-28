@@ -76,7 +76,7 @@
   });
 
   global.onnotificationclick = event => {
-    const url = 'http://localhost:8080/';
+    const url = '<%= api_url %>';
 
     // Android doesn't close the notification when you click it
     // See http://crbug.com/463146
