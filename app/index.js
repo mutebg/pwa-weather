@@ -20,6 +20,7 @@ class Main extends Component {
     this.state = {
       data: null,
       currentURL: '/',
+      isUpdating: false,
     }
 
     this.onRouteChange = this.onRouteChange.bind(this);
@@ -33,11 +34,14 @@ class Main extends Component {
       //save current user location
       Store.set('location', {latitude, longitude});
 
+      this.setState({isUpdating: true});
+
       //get weather forecast for current location
       const data = await get(`weather?latitude=${latitude}&longitude=${longitude}`);
 
       //update the state and render weather data
       this.setState({
+        isUpdating: false,
         data
       }, () => {
         //keep data in local storage, using it next time when app is open
@@ -82,7 +86,7 @@ class Main extends Component {
       <div class="main">
         <div class="page">
           <Router onChange={ this.onRouteChange }>
-            <Today data={currently} path="/"  />
+            <Today data={currently} path="/" isUpdating={state.isUpdating} />
             <Hourly {...hourly} path="/hourly" />
             <Daily {...daily} path="/daily" />
             <Settings path="/settings" />

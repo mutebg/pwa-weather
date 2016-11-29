@@ -1,16 +1,7 @@
 import './style.scss';
 import {h, Component} from 'preact';
 import Icon from '../icon';
-
-const DAYS_OF_WEEK = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday'
-];
+import { DAYS_OF_WEEK } from '../../utils/date';
 
 
 class Daily extends Component {

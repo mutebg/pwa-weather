@@ -71,7 +71,6 @@ class Settings extends Component {
   }
 
   render(props, state) {
-    console.log('state', state);
     return (
       <div class="Settings">
         <div class="Settings__row">

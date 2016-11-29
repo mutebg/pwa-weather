@@ -4,8 +4,14 @@
     font-size: 20px;
     text-align: center;
     text-transform: uppercase;
-    margin-top: 10px;
+    margin-top: 15px;
     line-height: 1.2;
+  }
+
+  &__update {
+    font-size: 12px;
+    text-align: center;
+    margin-top: -5px;
   }
 
   &__icon {

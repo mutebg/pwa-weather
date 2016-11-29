@@ -3,6 +3,8 @@ import {h, Component} from 'preact';
 import HourlyBar from '../hourlybar';
 import Icon from '../icon';
 import Wind from '../wind';
+import { formatDate } from '../../utils/date';
+
 
 
 class Today extends Component {
@@ -24,9 +26,15 @@ class Today extends Component {
     const sunriseTime = new Date( sunrise * 1000);
     const sunsetTime = new Date( sunset * 1000);
 
+    let update = 'Last update ' + formatDate(now);
+    if ( props.isUpdating ) {
+      update = 'is updating...';
+    }
+
 
     return (
       <div class="Today">
+        <div class="Today__update">{update}</div>
         <div class="Today__summary">{summary}</div>
         <div class="Today__icon">
           <Icon name={icon} />
