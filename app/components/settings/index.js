@@ -12,7 +12,7 @@ class Settings extends Component {
       pushSubscription: null,
       pushEnabled: false,
       pushButtonLabel: 'Enable Push Messages',
-      pushButtonDisabled: true,
+      pushButtonDisabled: false,
       notificationTime: '08:00',
       showPaymentBtn: false,
       successPayment: false,
@@ -49,9 +49,9 @@ class Settings extends Component {
     this.setState({
       notificationTime: e.srcElement.value,
     }, () => {
-      if ( this.state.subscription ) {
+      if ( this.state.pushSubscription ) {
         //update notification time on the server
-        sendUpdateSubscriptionToServer(this.state.subscription, this.state.time);
+        sendUpdateSubscriptionToServer(this.state.pushSubscription, this.state.notificationTime);
       }
     });
   }

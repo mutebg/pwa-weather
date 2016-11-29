@@ -26,12 +26,14 @@ const defaultsValues = {
 };
 
 const dbOptions = {
+    host: process.env.DB_HOST || '',
+    name: process.env.DB_NAME || '',
     user: process.env.DB_USER || '',
     pass: process.env.DB_PASS || ''
 };
 
 mongoose.Promise = global.Promise;
-mongoose.connect('localhost', 'stoyandelev', 27017, dbOptions);
+mongoose.connect(dbOptions.host, dbOptions.name, 27017, dbOptions);
 
 
 var Schema = mongoose.Schema;
@@ -91,10 +93,10 @@ app.get('/push/unsubscribe', (req, res) => {
 //UPDATE SUBSCRIBTION, USEALY TIME
 app.get('/push/update', (req, res) => {
   var update = {
-    subscription: req.query.subscription,
+    subscription: JSON.parse(req.query.subscription),
     time: req.query.time  || defaultsValues.time,
   };
-  SubscriptionsModel.findOneAndUpdate({'subscription.endpoint': JSON.parse(req.query.subscription).endpoint},
+  SubscriptionsModel.findOneAndUpdate({'subscription.endpoint': update.subscription.endpoint},
     update, {upsert: true, new: true, runValidators: true}, (err, data) => {
     if (err) {
       res.status(400).send(err.message);
@@ -104,25 +106,7 @@ app.get('/push/update', (req, res) => {
 });
 
 
-app.get('/run', (req,res) => {
-  webpush.setGCMAPIKey('AAAAlYY_UVo:APA91bHLItfywkjlRCuttvY78ly0Z-0_xtVgvV1WeOKdPLv79JxhRH0nxCu7-rdrFlJXfsa_W8R27CAfKiN2_z2cobQNpfkvRyNiKyxmASt9Rzx5rwOjIMTJuYSjsF3Dl9Ep-F6BSqI5vI1nI0bXKatkQurm_Ovd1w');
-
-  setInterval( () => {
-    var currentDate = new Date();
-    var currentTime = _.padStart(currentDate.getHours(), 2, 0) + ':' + _.padStart(currentDate.getMinutes(), 2, 0);
-    console.log('loop over time:', currentTime);
-
-    var findQuery = {time: currentTime};
-    SubscriptionsModel.find(findQuery)
-  		.exec( (err, subs ) => {
-  			subs.forEach( item => {
-          return webpush.sendNotification(item.subscription);
-        });
-      });
-  }, 1000 * 60);
-
-  res.status(200).send({success: 'process is running...'});
-});
+runNotificationLoop();
 
 
 var server = app.listen(5000, function() {
@@ -142,4 +126,23 @@ function requestWeather(lat, lng) {
       }
     });
   });
+}
+
+
+function runNotificationLoop() {
+  webpush.setGCMAPIKey('AAAAlYY_UVo:APA91bHLItfywkjlRCuttvY78ly0Z-0_xtVgvV1WeOKdPLv79JxhRH0nxCu7-rdrFlJXfsa_W8R27CAfKiN2_z2cobQNpfkvRyNiKyxmASt9Rzx5rwOjIMTJuYSjsF3Dl9Ep-F6BSqI5vI1nI0bXKatkQurm_Ovd1w');
+
+  setInterval( () => {
+    var currentDate = new Date();
+    var currentTime = _.padStart(currentDate.getHours(), 2, 0) + ':' + _.padStart(currentDate.getMinutes(), 2, 0);
+    console.log('loop over time:', currentTime);
+
+    var findQuery = {time: currentTime};
+    SubscriptionsModel.find(findQuery)
+      .exec( (err, subs ) => {
+        subs.forEach( item => {
+          return webpush.sendNotification(item.subscription);
+        });
+      });
+  }, 1000 * 60);
 }
