@@ -97,7 +97,7 @@ class Settings extends Component {
     if ( this.state.showPaymentBtn ) {
       return (
         <div class="Settings__row">
-          <label class="Settings__header">Support the project, make donation:</label>
+          <label class="Settings__header">Support this project</label>
           <button class="btn"  onClick={ this.makePayment }>
             Donate 5 EUR
           </button>
