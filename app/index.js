@@ -7,6 +7,7 @@ import Daily from './components/dailypage';
 import Hourly from './components/hourlypage';
 import Settings from './components/settings';
 import Navigation from './components/navigation';
+import Alert from './components/alert';
 import Icon from './components/icon';
 import Store from './utils/store';
 import {get} from './utils/api';
@@ -21,6 +22,7 @@ class Main extends Component {
       data: null,
       currentURL: '/',
       isUpdating: false,
+      error: null,
     }
 
     this.onRouteChange = this.onRouteChange.bind(this);
@@ -42,14 +44,17 @@ class Main extends Component {
       //update the state and render weather data
       this.setState({
         isUpdating: false,
-        data
+        data,
+        error: null,
       }, () => {
         //keep data in local storage, using it next time when app is open
         Store.set('weather', this.state.data);
       });
 
     } catch (err) {
-      console.log(err);
+      this.setState({
+        error: err.message
+      })
     }
   }
 
@@ -85,6 +90,7 @@ class Main extends Component {
     return (
       <div class="main">
         <div class="page">
+          <Alert message={state.error} />
           <Router onChange={ this.onRouteChange }>
             <Today data={currently} path="/" isUpdating={state.isUpdating} />
             <Hourly {...hourly} path="/hourly" />

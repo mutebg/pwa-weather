@@ -22,5 +22,5 @@ export const formatDate = (date) => {
     return date.getHours() + ':' + minutes;
   }
 
-  return date.getDate() + ' ' + MONTHS_OF_YEAR[ date.getMonth() ] + ' ' + date.getHors() + ':' + minutes;
+  return date.getDate() + ' ' + MONTHS_OF_YEAR[ date.getMonth() ] + ' ' + date.getHours() + ':' + minutes;
 };

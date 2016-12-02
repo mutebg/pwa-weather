@@ -61,7 +61,7 @@
             }
 
             //TODO real icon
-            let icon = 'http://downloadicons.net/sites/default/files/rain-icon-46110.png';
+            //let icon = '/';
 
             self.registration.showNotification( title, {
               body: body,
