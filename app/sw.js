@@ -69,7 +69,7 @@
             });
           })
           .catch( err => {
-            console.log(err);
+            console.log('Cant make push',err);
           });
       })
     )

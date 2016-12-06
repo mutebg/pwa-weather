@@ -54,14 +54,13 @@ app.use(function (err, req, res, next) {
 
 
 app.get('/weather', (req, res) => {
-  var lat = req.query['latitude'] || 52.379473;
-  var lng = req.query['longitude'] || 5.215532;
+  var lat = req.query['latitude'] || defaultsValues.location.latitude;
+  var lng = req.query['longitude'] || defaultsValues.location.longitude;
   requestWeather(lat, lng).then(response => {
     res.json( response );
   }).catch( error => {
     res.status(400).send(err.message);
   });
-
 });
 
 
@@ -92,7 +91,7 @@ app.get('/push/unsubscribe', (req, res) => {
 });
 
 
-//UPDATE SUBSCRIBTION, USEALY TIME
+//UPDATE SUBSCRIBTION ( USEALY NOTIFICATION TIME )
 app.get('/push/update', (req, res) => {
   var update = {
     subscription: JSON.parse(req.query.subscription),
@@ -108,11 +107,13 @@ app.get('/push/update', (req, res) => {
 });
 
 
+//redirect app urls to index html
 app.get(['/', '/hourly', '/daily', '/settings'], (req,res) => {
   res.sendFile(path.join(__dirname + '/build/index.html'));
 });
 
 
+//run notifiation loop that check db every 1 min and send notification
 runNotificationLoop();
 
 

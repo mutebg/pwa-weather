@@ -55,12 +55,6 @@ class Sky extends Component {
     ]
   }
 
-  componentDidMount() {
-    console.log('aaa');
-
-
-  }
-
   render(props) {
 
     let navItems = this.items.map( item => {
