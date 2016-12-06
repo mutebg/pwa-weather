@@ -67,7 +67,7 @@
     "idb-keyval": "^2.1.2",
     "lodash": "^4.17.2",
     "mongoose": "^4.6.8",
-    "preact": "^6.4.0",
+    "preact": "^7.1.0",
     "preact-router": "^2.3.2",
     "request": "^2.78.0",
     "rxjs": "^5.0.0-rc.3",
