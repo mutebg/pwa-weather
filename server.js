@@ -6,7 +6,9 @@ var request = require('request');
 var webpush = require('web-push');
 var mongoose = require('mongoose');
 var _ = require('lodash');
-var cookieParser = require('cookie-parser')
+var cookieParser = require('cookie-parser');
+var path = require('path');
+
 
 
 app.set('strict routing', true);
@@ -103,6 +105,11 @@ app.get('/push/update', (req, res) => {
     }
     res.status(200).send({success: true});
   });
+});
+
+
+app.get(['/', '/hourly', '/daily', '/settings'], (req,res) => {
+  res.sendFile(path.join(__dirname + '/build/index.html'));
 });
 
 

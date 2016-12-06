@@ -6,9 +6,9 @@
   importScripts('sw-toolbox.js'); // Update path to match your own setup
   importScripts('idb-keyval.js')
 
-  //global.toolbox.options.cache.name = 'sw-cache-<%= hash %>';
+  global.toolbox.options.cache.name = 'sw-cache-<%= hash %>';
 
-  //global.toolbox.precache(['/', <%= precache %>]);//its variable populated by node script
+  global.toolbox.precache(['/', <%= precache %>]);//its variable populated by node script
 
 
   //Turn on debug logging, visible in the Developer Tools' console.
@@ -17,7 +17,7 @@
   // By default, all requests that don't match our custom handler will use the
   // toolbox.networkFirst cache strategy, and their responses will be stored in
   // the default cache.
-  //global.toolbox.router.default = global.toolbox.networkFirst;
+  global.toolbox.router.default = global.toolbox.networkFirst;
 
   //global.location = {};
 

@@ -5,6 +5,7 @@
   <title><%= htmlWebpackPlugin.options.title %></title>
   <meta name="viewport" content="user-scalable=0, width=device-width, initial-scale=1.0,  minimum-scale=1.0, maximum-scale=1.0">
   <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#3374ff">
   <% for (var css in htmlWebpackPlugin.files.css) { %>
   <link href="<%=htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
   <% } %>
@@ -12,7 +13,18 @@
 </head>
 <body>
   <% if (htmlWebpackPlugin.options.appMountId) { %>
-  <div id="<%=htmlWebpackPlugin.options.appMountId%>"></div>
+  <div id="<%=htmlWebpackPlugin.options.appMountId%>">
+    <div style="margin-top: 25px">
+      <div class="Today__summary">Loading</div>
+      <div class="Today__icon">
+        <div class="icon icon--loading">
+          <div class="circle circle-s"></div>
+          <div class="h-line h-line--4 h-size-h h-left"></div>
+          <div class="h-line h-line--5 h-size-h h-right"></div>
+        </div>
+      </div>
+    </div>
+  </div>
   <% } %>
 
 

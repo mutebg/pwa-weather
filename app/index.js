@@ -116,7 +116,8 @@ class Main extends Component {
   }
 }
 
-
-render(<Main />, document.body);
+const container = document.getElementById('app');
+container.innerHTML = "";
+render(<Main />, container);
 
 require('./manifest.json');
