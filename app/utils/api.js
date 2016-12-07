@@ -7,7 +7,7 @@ const apiFetch = (url, method = 'get', data = {}) => {
   if (data) {
     options.body = JSON.stringify(data);
   }
-  return fetch(url, options).then( response => response.json() );
+  return fetch(url, options).then(response => response.json());
 };
 
 // ajax get method

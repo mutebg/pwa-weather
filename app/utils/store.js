@@ -1,4 +1,4 @@
-import idb from  'idb-keyval';
+import idb from 'idb-keyval';
 
 class Store {
 
@@ -11,12 +11,11 @@ class Store {
   }
 
   get(key) {
-    return this.store.get(key).then(val => {
-      if ( val ) {
+    return this.store.get(key).then((val) => {
+      if (val) {
         return JSON.parse(val);
-      } else {
-        return null;
       }
+      return null;
     });
   }
 

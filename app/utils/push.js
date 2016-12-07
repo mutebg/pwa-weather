@@ -1,17 +1,15 @@
-import config from '../config';
+import { get } from './api';
 
 function sendSubscriptionToServer(subscription, time) {
-  fetch( config.API_URL + 'push/subscribe?subscription=' + JSON.stringify(subscription) +
-    '&time=' + time );
+  get(`push/subscribe?subscription=${JSON.stringify(subscription)}&time=${time}`);
 }
 
 export function sendUpdateSubscriptionToServer(subscription, time) {
-  fetch( config.API_URL + 'push/update?subscription=' + JSON.stringify(subscription) +
-    '&time=' + time );
+  get(`push/update?subscription=${JSON.stringify(subscription)}&time=${time}`);
 }
 
 function sendUnSubscriptionToServer(subscription) {
-  fetch( config.API_URL + 'push/unsubscribe?subscription=' + JSON.stringify(subscription) );
+  get(`push/unsubscribe?subscription=${JSON.stringify(subscription)}`);
 }
 
 
@@ -21,54 +19,48 @@ export function unsubscribe(react) {
   });
 
 
-  navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+  navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
     // To unsubscribe from push messaging, you need get the
     // subcription object, which you can call unsubscribe() on.
-    serviceWorkerRegistration.pushManager.getSubscription().then(
-      function(pushSubscription) {
+    serviceWorkerRegistration.pushManager.getSubscription().then((pushSubscription) => {
         // Check we have a subscription to unsubscribe
-        if (!pushSubscription) {
-          // No subscription object, so set the state
-          // to allow the user to subscribe to push
-          react.setState({
-            pushButtonDisabled: false,
-            pushButtonLabel: 'Enable Push Messages',
-            pushEnabled: false,
-          });
-          return;
-        }
-
-        // TODO: Make a request to your server to remove
-        // the users data from your data store so you
-        // don't attempt to send them push messages anymore
-
-        // We have a subcription, so call unsubscribe on it
-        pushSubscription.unsubscribe().then(function() {
-          react.setState({
-            pushButtonDisabled: false,
-            pushButtonLabel: 'Enable Push Messages',
-            pushEnabled: false,
-          });
-
-          sendUnSubscriptionToServer(pushSubscription);
-
-        }).catch(function(e) {
-          // We failed to unsubscribe, this can lead to
-          // an unusual state, so may be best to remove
-          // the subscription id from your data store and
-          // inform the user that you disabled push
-
-          react.setState({
-            pushButtonDisabled: false,
-            pushButtonLabel: 'Unsubscription error',
-          });
-
+      if (!pushSubscription) {
+        // No subscription object, so set the state
+        // to allow the user to subscribe to push
+        react.setState({
+          pushButtonDisabled: false,
+          pushButtonLabel: 'Enable Push Messages',
+          pushEnabled: false,
         });
-      }).catch(function(e) {
-        console.log('Error thrown while unsubscribing from ' +
-          'push messaging.', e);
+        return;
+      }
 
+      // TODO: Make a request to your server to remove
+      // the users data from your data store so you
+      // don't attempt to send them push messages anymore
+
+      // We have a subcription, so call unsubscribe on it
+      pushSubscription.unsubscribe().then(() => {
+        react.setState({
+          pushButtonDisabled: false,
+          pushButtonLabel: 'Enable Push Messages',
+          pushEnabled: false,
+        });
+        sendUnSubscriptionToServer(pushSubscription);
+      }).catch(() => {
+        // We failed to unsubscribe, this can lead to
+        // an unusual state, so may be best to remove
+        // the subscription id from your data store and
+        // inform the user that you disabled push
+
+        react.setState({
+          pushButtonDisabled: false,
+          pushButtonLabel: 'Unsubscription error',
+        });
       });
+    }).catch((e) => {
+      console.log('Error thrown while unsubscribing from push messaging.', e);
+    });
   });
 }
 
@@ -79,56 +71,54 @@ export function subscribe(react) {
     pushButtonDisabled: true,
   });
 
-  navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+  navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
     serviceWorkerRegistration.pushManager.subscribe({
       userVisibleOnly: true,
-    }).then(function(subscription) {
-        // The subscription was successful
-
-        react.setState({
-          pushEnabled: true,
-          pushButtonDisabled: false,
-          pushButtonLabel: 'Disable Push Messages',
-          pushSubscription: subscription,
-        });
-
-        // TODO: Send the subscription subscription.endpoint
-        // to your server and save it to send a push message
-        // at a later date
-        return sendSubscriptionToServer(subscription, react.state.notificationTime);
-      })
-      .catch(function(e) {
-        if (Notification.permission === 'denied') {
-          // The user denied the notification permission which
-          // means we failed to subscribe and the user will need
-          // to manually change the notification permission to
-          // subscribe to push messages
-          react.setState({
-            pushButtonDisabled: true,
-            pushButtonLabel: 'Permission for Notifications was denied',
-          });
-
-        } else {
-          // A problem occurred with the subscription, this can
-          // often be down to an issue or lack of the gcm_sender_id
-          // and / or gcm_user_visible_only
-          console.log('Unable to subscribe to push.', e);
-          react.setState({
-            pushButtonDisabled: false,
-            pushButtonLabel: 'Enable Push Messages',
-          });
-        }
+    }).then((subscription) => {
+      // The subscription was successful
+      react.setState({
+        pushEnabled: true,
+        pushButtonDisabled: false,
+        pushButtonLabel: 'Disable Push Messages',
+        pushSubscription: subscription,
       });
+
+      // TODO: Send the subscription subscription.endpoint
+      // to your server and save it to send a push message
+      // at a later date
+      return sendSubscriptionToServer(subscription, react.state.notificationTime);
+    })
+    .catch((e) => {
+      if (Notification.permission === 'denied') {
+        // The user denied the notification permission which
+        // means we failed to subscribe and the user will need
+        // to manually change the notification permission to
+        // subscribe to push messages
+        react.setState({
+          pushButtonDisabled: true,
+          pushButtonLabel: 'Permission for Notifications was denied',
+        });
+      } else {
+        // A problem occurred with the subscription, this can
+        // often be down to an issue or lack of the gcm_sender_id
+        // and / or gcm_user_visible_only
+        console.log('Unable to subscribe to push.', e);
+        react.setState({
+          pushButtonDisabled: false,
+          pushButtonLabel: 'Enable Push Messages',
+        });
+      }
+    });
   });
 }
 
 // Once the service worker is registered set the initial state
-export function initialiseState( react ) {
+export function initialiseState(react) {
   // Are Notifications supported in the service worker?
   if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
     react.setState({
       pushButtonDisabled: true,
-      pushButtonLabel: 'Notifications aren\'t supported.'
+      pushButtonLabel: 'Notifications aren\'t supported.',
     });
     console.log('Notifications aren\'t supported.');
     return false;
@@ -140,7 +130,7 @@ export function initialiseState( react ) {
   if (Notification.permission === 'denied') {
     react.setState({
       pushButtonDisabled: true,
-      pushButtonLabel: 'The user has blocked notifications.'
+      pushButtonLabel: 'The user has blocked notifications.',
     });
     console.log('The user has blocked notifications.');
     return false;
@@ -157,10 +147,10 @@ export function initialiseState( react ) {
   }
 
   // We need the service worker registration to check for a subscription
-  navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+  navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
     // Do we already have a push message subscription?
     serviceWorkerRegistration.pushManager.getSubscription()
-      .then(function(subscription) {
+      .then((subscription) => {
         // Enable any UI which subscribes / unsubscribes from
         // push messages.
         react.setState({
@@ -177,7 +167,7 @@ export function initialiseState( react ) {
         sendUpdateSubscriptionToServer(subscription, react.state.notificationTime);
 
         react.setState({
-          pushSubscription: subscription
+          pushSubscription: subscription,
         });
 
         // Set your UI to show they have subscribed for
@@ -187,7 +177,7 @@ export function initialiseState( react ) {
           pushButtonLabel: 'Disable Push Messages',
         });
       })
-      .catch(function(err) {
+      .catch(() => {
         react.setState({
           pushButtonLabel: 'Error during subscription',
         });

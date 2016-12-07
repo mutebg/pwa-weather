@@ -1,6 +1,6 @@
 var config = {};
 
-switch( process.env.NODE_ENV ) {
+switch (process.env.NODE_ENV) {
 
   case 'production':
     config = require('./config.production.js');
@@ -9,7 +9,6 @@ switch( process.env.NODE_ENV ) {
   default:
     config = require('./config.development.js');
     break;
-
 }
 
 module.exports = config;

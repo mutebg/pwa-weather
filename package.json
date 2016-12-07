@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack && node scripts/sw-generator.js",
     "start": "webpack-dev-server",
-    "sw": "npm run build && http-server build"
+    "sw": "npm run build && http-server build",
+    "lint": "./node_modules/.bin/eslint app"
   },
   "author": "Stoyan Delev",
   "license": "ISC",
@@ -15,6 +16,7 @@
     "babel": "^6.3.26",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.3.26",
+    "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.8",
     "babel-plugin-react-transform": "^2.0.0",
     "babel-plugin-syntax-async-functions": "^6.13.0",
@@ -40,6 +42,12 @@
     "clean-webpack-plugin": "^0.1.9",
     "compression-webpack-plugin": "^0.3.2",
     "css-loader": "^0.23.1",
+    "eslint": "^3.11.1",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.8.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.22.0",
