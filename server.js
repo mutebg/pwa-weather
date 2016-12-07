@@ -28,10 +28,10 @@ const defaultsValues = {
 };
 
 const dbOptions = {
-    host: process.env.DB_HOST || '',
-    name: process.env.DB_NAME || '',
-    user: process.env.DB_USER || '',
-    pass: process.env.DB_PASS || ''
+  host: process.env.DB_HOST || '',
+  name: process.env.DB_NAME || '',
+  user: process.env.DB_USER || '',
+  pass: process.env.DB_PASS || ''
 };
 
 mongoose.Promise = global.Promise;
@@ -48,8 +48,8 @@ var SubscriptionsModel = mongoose.model('subscriptions', new Schema({
 
 
 app.use(function (err, req, res, next) {
- 	// handle error
- 	console.log(err);
+  // handle errors TODO
+  console.log(err);
 });
 
 
@@ -111,7 +111,6 @@ app.get('/push/update', (req, res) => {
 app.get(['/', '/hourly', '/daily', '/settings'], (req,res) => {
   res.sendFile(path.join(__dirname + '/build/index.html'));
 });
-
 
 //run notifiation loop that check db every 1 min and send notification
 runNotificationLoop();

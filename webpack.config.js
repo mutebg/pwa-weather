@@ -7,7 +7,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var config = require('./app.config');
 var BabiliPlugin = require("babili-webpack-plugin");
-
+var CompressionPlugin = require('compression-webpack-plugin');
 
 
 const TARGET = process.env.npm_lifecycle_event;
@@ -20,8 +20,6 @@ process.env.BABEL_ENV = TARGET;
 
 
 const common = {
-    // Entry accepts a path or an object of entries.
-    // The build chapter contains an example of the latter.
     entry: PATHS.app,
     output: {
         path: PATHS.build,
@@ -38,27 +36,22 @@ const common = {
         preLoaders: [
         ],
         loaders: [
-            // Set up jsx. This accepts js too thanks to RegExp
             {
                 test: /\.jsx?$/,
                 loaders: ['babel'],
                 include: PATHS.app
             }, {
-                // Test expects a RegExp! Note the slashes!
                 test: /\.css$/,
                 loaders: ['style', 'css'],
-                // Include accepts either a path or an array of paths.
                 include: PATHS.app
             },{
                 test: /\.scss$/,
                 loader: TARGET === 'build' ?
                   ExtractTextPlugin.extract('style-loader', 'css-loader?minimize!autoprefixer-loader!sass-loader!sass-resources') :
                   'style!css!autoprefixer-loader!sass!sass-resources',
-                // Include accepts either a path or an array of paths.
                 include: PATHS.app
             },{
                 test: /\.(png|jpg|svg|woff2)$/,
-                //loader: "url-loader?limit=100000"
                 loader: "file-loader"
             },{
               test: /manifest.json$/,
@@ -94,11 +87,7 @@ if (TARGET === 'start' || !TARGET) {
             hot: true,
             inline: true,
             progress: true,
-
-            // Display only errors to reduce the amount of output.
             stats: 'errors-only',
-
-            // Parse host and port from env so this is easy to customize.
             host: config.SERVER_HOST,
             port: config.SERVER_PORT
         },
@@ -112,14 +101,12 @@ if (TARGET === 'start' || !TARGET) {
 if (TARGET === 'build') {
     module.exports = merge(common, {
         plugins: [
-          // new UglifyJsPlugin({
-          //   //minimize: true
-          // }),
           new BabiliPlugin(),
           new webpack.optimize.DedupePlugin(),
           new CleanWebpackPlugin(['build']),
           new ExtractTextPlugin("styles.[hash].css"),
           new webpack.optimize.OccurenceOrderPlugin(),
+          new webpack.optimize.AggressiveMergingPlugin(),
         ]
     });
 }

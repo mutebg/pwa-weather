@@ -72,7 +72,7 @@ class Main extends Component {
       pageElement.scrollTop = 0;
       this.setState({
         currentURL: window.location.pathname,
-      })
+      });
     }
   }
 
