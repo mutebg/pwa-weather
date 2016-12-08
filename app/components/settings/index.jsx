@@ -13,7 +13,7 @@ class Settings extends Component {
       pushEnabled: false,
       pushButtonLabel: 'Enable Push Messages',
       pushButtonDisabled: false,
-      notificationTime: Store.get('notification_time') || '08:00',
+      notificationTime: '08:00',
       showPaymentBtn: false,
       successPayment: false,
       paymentData: null,
@@ -32,6 +32,8 @@ class Settings extends Component {
         showPaymentBtn: true,
       });
     }
+
+    Store.get('notification_time').then(notificationTime => this.setState({ notificationTime: notificationTime || '08:00' }));
   }
 
   onNotificationTimeChange(e) {
