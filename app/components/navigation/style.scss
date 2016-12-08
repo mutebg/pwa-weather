@@ -1,11 +1,13 @@
 .Navigation {
   display: flex;
   text-align: center;
+  justify-content: center;
 
   &__item {
     flex: 1;
     text-transform: uppercase;
     color: inherit;
+    max-width: 160px;
 
     &--selected {
       color: color('primary');

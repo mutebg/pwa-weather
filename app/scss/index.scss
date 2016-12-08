@@ -21,7 +21,7 @@ body {
 }
 
 .content {
-  max-width: 700px;
+  max-width: 600px;
   margin: 0 auto;
 
   // animation-name: fade-in;
@@ -36,6 +36,9 @@ body {
   min-height: 60px;
   max-height: 60px;
   background: #e6e6e6;
+  @include respond-from('sm') {
+    box-shadow: 0 2px 4px rgba(0,0,0,.15);
+  }
 }
 
 
