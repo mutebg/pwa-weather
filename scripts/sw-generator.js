@@ -2,7 +2,7 @@
 var fs = require('fs');
 var _ = require('lodash');
 var exclude = ['sw.js', 'sw-toolbox.js', 'manifest.json', 'idb-keyval.js'];
-var config = require('../app/config.js');
+var config = require('../app/config.production.js');
 
 //read all files that have to be precashed
 var fileList = fs.readdirSync('./build').filter( function(item){
