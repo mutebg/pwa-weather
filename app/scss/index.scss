@@ -1,29 +1,3 @@
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 400;
-//   src: local('Roboto'), local('Roboto-Regular'), url('../assets/fonts/Roboto-400.woff2') format('woff2');
-//   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-// }
-//
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 500;
-//   src: local('Roboto Medium'), local('Roboto-Medium'), url('../assets/fonts/Roboto-500.woff2') format('woff2');
-//   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-// }
-//
-// /* latin */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 700;
-//   src: local('Roboto Bold'), local('Roboto-Bold'), url('../assets/fonts/Roboto-700.woff2') format('woff2');
-//   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-// }
-//
-
 body {
   background: color('bg');
   font-family: 'Roboto', sans-serif;;
@@ -35,12 +9,26 @@ body {
   display: flex;
   height: 100vh;
   flex-direction: column;
+  @include respond-from('sm') {
+    flex-direction: column-reverse;
+  }
 }
 
 .page {
   flex: auto;
   padding: 15px;
   overflow-y: auto;
+}
+
+.content {
+  max-width: 700px;
+  margin: 0 auto;
+
+  // animation-name: fade-in;
+  // animation-timing-function: ease;
+  // animation-fill-mode: forwards;
+  // animation-iteration-count: 1;
+  // animation-duration: 0.6s;
 }
 
 .Navigation {
@@ -62,3 +50,12 @@ body {
   margin: 20px 10px 10px;
   text-align: center;
 }
+
+// @keyframes fade-in {
+//   0% {
+//     opacity: 0;
+//   }
+//   100% {
+//     opacity: 1;
+//   }
+// }

@@ -23,7 +23,7 @@ export default function({data, isUpdating}) {
   }
 
   return (
-    <div class="Today">
+    <div class="Today content">
       <div class="Today__update">{update}</div>
       <div class="Today__summary">{summary}</div>
       <div class="Today__icon">

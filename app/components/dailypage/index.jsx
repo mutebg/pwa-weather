@@ -33,7 +33,7 @@ export default function( {data, summary}) {
   });
 
   return (
-    <div class="Daily">
+    <div class="Daily content">
       <div class="Today__summary" style={{ marginBottom: 25 }}>{summary}</div>
       {days}
     </div>

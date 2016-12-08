@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import { initialiseState, subscribe, unsubscribe, sendUpdateSubscriptionToServer } from '../../utils/push';
 import { requestPayment } from '../../utils/payment';
+import Store from '../../utils/store';
 import './style.scss';
 
 class Settings extends Component {
@@ -12,7 +13,7 @@ class Settings extends Component {
       pushEnabled: false,
       pushButtonLabel: 'Enable Push Messages',
       pushButtonDisabled: false,
-      notificationTime: '08:00',
+      notificationTime: Store.get('notification_time') || '08:00',
       showPaymentBtn: false,
       successPayment: false,
       paymentData: null,
@@ -40,6 +41,7 @@ class Settings extends Component {
     this.setState({
       notificationTime: e.srcElement.value,
     }, () => {
+      Store.set('notification_time', this.state.notificationTime);
       if (this.state.pushSubscription) {
         // update notification time on the server
         sendUpdateSubscriptionToServer(this.state.pushSubscription, this.state.notificationTime);
@@ -100,7 +102,7 @@ class Settings extends Component {
 
   render(props, state) {
     return (
-      <div class="Settings">
+      <div class="Settings content">
         <div class="Settings__row">
           <label htmlFor="notification" class="Settings__header">Daily Summary</label>
           <span class="Settings__sub">
