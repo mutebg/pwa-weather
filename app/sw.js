@@ -60,12 +60,10 @@
               body = Math.round(data.currently.precipProbability * 100) + '% ' + data.currently.precipType + ' - ' + body;
             }
 
-            //TODO real icon
-            //let icon = '/';
-
+            let icon = '/notification-icon.png';
             self.registration.showNotification( title, {
               body: body,
-              //icon: icon
+              icon: icon
             });
           })
           .catch( err => {
