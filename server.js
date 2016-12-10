@@ -93,10 +93,11 @@ app.get('/weather', (req, res) => {
 
 
 // SUBSCRIBE FOR PUSH NOTIFICATIONS
-app.get('/push/subscribe', (req, res) => {
+app.post('/push/subscribe', (req, res) => {
+  console.log(req.body);
   SubscriptionsModel.create({
-    time: req.query.time || defaultsValues.time,
-    subscription: JSON.parse(req.query.subscription),
+    time: req.body.time || defaultsValues.time,
+    subscription: req.body.subscription,
   }, (err) => {
     if (err) {
       res.status(400).send(err.message);
@@ -108,8 +109,9 @@ app.get('/push/subscribe', (req, res) => {
 
 
 // UNSUBSCRIBE FOR PUSH NOTIFICATIONS
-app.get('/push/unsubscribe', (req, res) => {
-  SubscriptionsModel.findOneAndRemove({ 'subscription.endpoint': JSON.parse(req.query.subscription).endpoint }, (err) => {
+app.delete('/push/subscribe', (req, res) => {
+  console.log(req.body);
+  SubscriptionsModel.findOneAndRemove({ 'subscription.endpoint': req.body.subscription.endpoint }, (err) => {
     if (err) {
       res.status(400).send(err.message);
     } else {
@@ -120,10 +122,11 @@ app.get('/push/unsubscribe', (req, res) => {
 
 
 // UPDATE SUBSCRIBTION ( USEALY NOTIFICATION TIME )
-app.get('/push/update', (req, res) => {
+app.patch('/push/subscribe', (req, res) => {
+  console.log(req.body);
   const update = {
-    subscription: JSON.parse(req.query.subscription),
-    time: req.query.time || defaultsValues.time,
+    subscription: req.body.subscription,
+    time: req.body.time || defaultsValues.time,
   };
   SubscriptionsModel.findOneAndUpdate({ 'subscription.endpoint': update.subscription.endpoint },
     update, { upsert: true, new: true, runValidators: true }, (err) => {

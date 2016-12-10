@@ -1,15 +1,15 @@
-import { get } from './api';
+import { post, remove, patch } from './api';
 
 function sendSubscriptionToServer(subscription, time) {
-  get(`push/subscribe?subscription=${JSON.stringify(subscription)}&time=${time}`);
+  post('push/subscribe', { subscription, time });
 }
 
 export function sendUpdateSubscriptionToServer(subscription, time) {
-  get(`push/update?subscription=${JSON.stringify(subscription)}&time=${time}`);
+  patch('push/subscribe', { subscription, time });
 }
 
 function sendUnSubscriptionToServer(subscription) {
-  get(`push/unsubscribe?subscription=${JSON.stringify(subscription)}`);
+  remove('push/subscribe', { subscription });
 }
 
 
