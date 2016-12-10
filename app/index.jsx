@@ -73,6 +73,11 @@ class Main extends Component {
       this.setState({
         error: err.message,
       });
+
+      // clear the error after 5 sec
+      setTimeout(() => {
+        this.setState({ error: '' });
+      }, 5000);
     }
   }
 
