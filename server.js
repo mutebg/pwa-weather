@@ -33,6 +33,10 @@ const dbOptions = {
   pass: process.env.DB_PASS || '',
 };
 
+const darkSkyApiKey = process.env.DARK_SKY_KEY || '';
+const GCMApiKey = process.env.GCM_KEY || '';
+// 81ce376a0c64563f03a4c92cc3268a92
+// AAAAlYY_UVo:APA91bHLItfywkjlRCuttvY78ly0Z-0_xtVgvV1WeOKdPLv79JxhRH0nxCu7-rdrFlJXfsa_W8R27CAfKiN2_z2cobQNpfkvRyNiKyxmASt9Rzx5rwOjIMTJuYSjsF3Dl9Ep-F6BSqI5vI1nI0bXKatkQurm_Ovd1w
 mongoose.Promise = global.Promise;
 mongoose.connect(dbOptions.host, dbOptions.name, 27017, dbOptions);
 
@@ -47,7 +51,7 @@ const SubscriptionsModel = mongoose.model('subscriptions', new Schema({
 
 function requestWeather(lat, lng) {
   return new Promise((resolve, reject) => {
-    request(`https://api.darksky.net/forecast/81ce376a0c64563f03a4c92cc3268a92/${lat},${lng}?exclude=minutely,flags&units=si`, (error, response, body) => {
+    request(`https://api.darksky.net/forecast/${darkSkyApiKey}/${lat},${lng}?exclude=minutely,flags&units=si`, (error, response, body) => {
       if (!error && response.statusCode === 200) {
         resolve(JSON.parse(body));
       } else {
@@ -58,7 +62,7 @@ function requestWeather(lat, lng) {
 }
 
 function runNotificationLoop() {
-  webpush.setGCMAPIKey('AAAAlYY_UVo:APA91bHLItfywkjlRCuttvY78ly0Z-0_xtVgvV1WeOKdPLv79JxhRH0nxCu7-rdrFlJXfsa_W8R27CAfKiN2_z2cobQNpfkvRyNiKyxmASt9Rzx5rwOjIMTJuYSjsF3Dl9Ep-F6BSqI5vI1nI0bXKatkQurm_Ovd1w');
+  webpush.setGCMAPIKey(GCMApiKey);
 
   setInterval(() => {
     const currentDate = new Date();
