@@ -1,6 +1,6 @@
-import './style.scss';
-import {h, Component} from 'preact';
+import { h, Component } from 'preact';
 import Wind from '../wind';
+import './style.scss';
 
 class HourlyBar extends Component {
   constructor(props) {
