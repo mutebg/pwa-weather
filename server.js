@@ -60,6 +60,7 @@ function requestWeather(lat, lng) {
           'currently.apparentTemperature',
           'currently.windSpeed',
           'currently.windBearing',
+          'currently.humidity',
           'currently.precipProbability',
           'hourly.summary',
           'hourly.data',
