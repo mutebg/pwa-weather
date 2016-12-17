@@ -24,9 +24,11 @@ class Main extends Component {
       currentURL: '/',
       isUpdating: false,
       error: null,
+      isOffline: false,
     };
 
     this.onRouteChange = this.onRouteChange.bind(this);
+    this.updateOnlineStatus = this.updateOnlineStatus.bind(this);
   }
 
   componentDidMount() {
@@ -35,6 +37,9 @@ class Main extends Component {
 
     // load remote data
     this.loadRemoteData();
+
+    addEventListener('online',  this.updateOnlineStatus);
+    addEventListener('offline', this.updateOnlineStatus);
   }
 
   onRouteChange() {
@@ -45,6 +50,13 @@ class Main extends Component {
         currentURL: window.location.pathname,
       });
     }
+  }
+
+  updateOnlineStatus() {
+    const isOffline = !navigator.onLine;
+    this.setState({
+      isOffline,
+    });
   }
 
   async loadRemoteData() {
@@ -72,6 +84,7 @@ class Main extends Component {
     } catch (err) {
       this.setState({
         error: err.message,
+        isUpdating: false,
       });
 
       // clear the error after 5 sec
@@ -106,7 +119,12 @@ class Main extends Component {
     return (
       <div class="main">
         <div class="page">
-          <Alert message={state.error} />
+          {
+            <Alert message={state.error} />
+          }
+          {
+            state.isOffline ? <Alert message={'You are offline'} /> : null
+          }
           <Router onChange={this.onRouteChange}>
             <Today data={currently} path="/" isUpdating={state.isUpdating} />
             <Hourly {...hourly} path="/hourly" />
