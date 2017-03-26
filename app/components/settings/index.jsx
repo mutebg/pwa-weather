@@ -1,11 +1,15 @@
 import { h, Component } from 'preact';
-import { initialiseState, subscribe, unsubscribe, sendUpdateSubscriptionToServer } from '../../utils/push';
+import {
+  initialiseState,
+  subscribe,
+  unsubscribe,
+  sendUpdateSubscriptionToServer,
+} from '../../utils/push';
 import { requestPayment } from '../../utils/payment';
 import Store from '../../utils/store';
 import './style.scss';
 
 class Settings extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -33,22 +37,26 @@ class Settings extends Component {
       });
     }
 
-    Store.get('notification_time').then(notificationTime => this.setState({ notificationTime: notificationTime || '08:00' }));
+    Store.get('notification_time').then(notificationTime =>
+      this.setState({ notificationTime: notificationTime || '08:00' }));
   }
 
   onNotificationTimeChange(e) {
     if (!e.srcElement.value) {
       return;
     }
-    this.setState({
-      notificationTime: e.srcElement.value,
-    }, () => {
-      Store.set('notification_time', this.state.notificationTime);
-      if (this.state.pushSubscription) {
-        // update notification time on the server
-        sendUpdateSubscriptionToServer(this.state.pushSubscription, this.state.notificationTime);
-      }
-    });
+    this.setState(
+      {
+        notificationTime: e.srcElement.value,
+      },
+      () => {
+        Store.set('notification_time', this.state.notificationTime);
+        if (this.state.pushSubscription) {
+          // update notification time on the server
+          sendUpdateSubscriptionToServer(this.state.pushSubscription, this.state.notificationTime);
+        }
+      },
+    );
   }
 
   togglePushSubscribe() {
@@ -60,17 +68,19 @@ class Settings extends Component {
   }
 
   makePayment() {
-    requestPayment().then((e) => {
-      this.setState({
-        successPayment: true,
-        paymentData: e,
+    requestPayment()
+      .then((e) => {
+        this.setState({
+          successPayment: true,
+          paymentData: e,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          successPayment: true,
+          paymentData: err,
+        });
       });
-    }).catch((err) => {
-      this.setState({
-        successPayment: true,
-        paymentData: err,
-      });
-    });
   }
 
   renderPaymentButton() {
@@ -93,10 +103,14 @@ class Settings extends Component {
       details.cardNumber = `XXXX-XXXX-XXXX-${details.cardNumber.substr(12)}`;
       details.cardSecurityCode = '***';
 
-      const string = JSON.stringify({
-        methodName: this.state.paymentData.methodName,
-        details,
-      }, undefined, 2);
+      const string = JSON.stringify(
+        {
+          methodName: this.state.paymentData.methodName,
+          details,
+        },
+        undefined,
+        2,
+      );
       return <pre>{string}</pre>;
     }
     return null;
@@ -115,12 +129,13 @@ class Settings extends Component {
             class="btn"
             disabled={state.pushButtonDisabled}
             onClick={() => this.togglePushSubscribe()}
-          > {state.pushButtonLabel}
+          >
+            {' '}{state.pushButtonLabel}
           </button>
         </div>
         <div class="Settings__row Settings__row--time">
           <button class="btn btn--primary" disabled={state.pushButtonDisabled}>
-            Notificaiton time: {state.notificationTime}
+            Notification time: {state.notificationTime}
           </button>
           <input
             type="time"
@@ -130,8 +145,8 @@ class Settings extends Component {
             disabled={state.pushButtonDisabled}
           />
         </div>
-        { this.renderPaymentButton() }
-        { this.renderPaymentMessage() }
+        {this.renderPaymentButton()}
+        {this.renderPaymentMessage()}
       </div>
     );
   }
