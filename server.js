@@ -15,6 +15,7 @@ app.use(express.static(path.join(__dirname, '/build')));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.enable('trust proxy');
 
 const defaultsValues = {
   time: '08:00',
