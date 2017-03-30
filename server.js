@@ -189,9 +189,8 @@ app.patch('/push/subscribe', (req, res) => {
 const where = require('node-where');
 
 app.use('/geolocation', (req, res) => {
-  where.is('173.194.33.104', (err, result) => {
-  //where.is(req.ip, (err, result) => {
-    // console.log('eeee', result);
+  //where.is('173.194.33.104', (err, result) => {
+  where.is(req.ip, (err, result) => {
     res.send({latitude: result.attributes.lat, longitude: result.attributes.lng });
   });
 });
