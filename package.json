@@ -73,6 +73,7 @@
     "idb-keyval": "^2.1.2",
     "lodash": "^4.17.2",
     "mongoose": "^4.6.8",
+    "node-where": "^1.0.0",
     "preact": "^7.1.0",
     "preact-router": "^2.3.2",
     "request": "^2.78.0",

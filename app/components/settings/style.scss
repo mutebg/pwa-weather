@@ -59,5 +59,9 @@
     left: 0;
     top: 0;
     opacity: 0;
+    @include respond-from('sm') {
+      opacity: 1;
+      text-align: center;
+    }
   }
 }

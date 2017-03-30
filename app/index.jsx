@@ -14,9 +14,7 @@ import { getCurrentPosition } from './utils/location';
 import './scss/reset.scss';
 import './scss/index.scss';
 
-
 class Main extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -38,7 +36,7 @@ class Main extends Component {
     // load remote data
     this.loadRemoteData();
 
-    addEventListener('online',  this.updateOnlineStatus);
+    addEventListener('online', this.updateOnlineStatus);
     addEventListener('offline', this.updateOnlineStatus);
   }
 
@@ -73,14 +71,17 @@ class Main extends Component {
       const data = await get(`weather?latitude=${latitude}&longitude=${longitude}`);
 
       // update the state and render weather data
-      this.setState({
-        isUpdating: false,
-        data,
-        error: null,
-      }, () => {
-        // keep data in local storage, using it next time when app is open
-        Store.set('weather', this.state.data);
-      });
+      this.setState(
+        {
+          isUpdating: false,
+          data,
+          error: null,
+        },
+        () => {
+          // keep data in local storage, using it next time when app is open
+          Store.set('weather', this.state.data);
+        },
+      );
     } catch (err) {
       this.setState({
         error: err.message,
@@ -88,9 +89,12 @@ class Main extends Component {
       });
 
       // clear the error after 5 sec
-      setTimeout(() => {
-        this.setState({ error: '' });
-      }, 5000);
+      setTimeout(
+        () => {
+          this.setState({ error: '' });
+        },
+        5000,
+      );
     }
   }
 
@@ -119,19 +123,18 @@ class Main extends Component {
     return (
       <div class="main">
         <div class="page">
-          {
-            <Alert message={state.error} />
-          }
-          {
-            state.isOffline ? <Alert message={'You are offline'} /> : null
-          }
+          {<Alert message={state.error} />}
+          {state.isOffline ? <Alert message={'You are offline'} /> : null}
           <Router onChange={this.onRouteChange}>
             <Today data={currently} path="/" isUpdating={state.isUpdating} />
             <Hourly {...hourly} path="/hourly" />
             <Daily {...daily} path="/daily" />
             <Settings path="/settings" />
           </Router>
-          <p class="copyright">POWERED BY DARK SKY</p>
+          <p class="copyright">
+            POWERED BY DARK SKY<br />
+            <a href="https://github.com/mutebg/pwa-weather" target="blank">SOURCE CODE</a>
+          </p>
         </div>
         <Navigation currentURL={state.currentURL} />
       </div>
