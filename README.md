@@ -10,3 +10,4 @@ is simple __progressive web app__ created just for expererimenting with latest w
 ### TODO
 - Credential Management API - so users can sign-in/out
 - BackgroundSync - sync weather data in background ( periodicSync )
+- Write tests
