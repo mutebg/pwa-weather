@@ -1,0 +1,64 @@
+@import '_mixins';
+
+body {
+	background: color('bg');
+	font-family: 'Roboto', sans-serif;
+	color: color('dark');
+	font-size: 14px;
+}
+
+.main {
+	height: 100vh;
+}
+
+.page {
+	padding: 15px 15px 80px 15px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	@include respond-from('sm') {
+		padding-top: 80px;
+		padding-bottom: 15px;
+	}
+}
+
+.content {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.Navigation {
+	height: 60px;
+	background: #e6e6e6;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 99;
+
+	@include respond-from('sm') {
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+		top: 0;
+		bottom: auto;
+	}
+}
+
+.box {
+	border-radius: 4px;
+	padding: 20px;
+	background: color('primary');
+	margin-bottom: 20px;
+}
+
+.copyright {
+	margin: 20px 10px 10px;
+	text-align: center;
+}
+
+// @keyframes fade-in {
+//   0% {
+//     opacity: 0;
+//   }
+//   100% {
+//     opacity: 1;
+//   }
+// }
