@@ -1,0 +1,243 @@
+@import '_variables';
+
+/// Convert from pixels to rems
+/// @param {Number} $pixels - pixel value to convert
+/// @param {Number} $context - Font size context, usually and default is 16
+@function rem($pixels, $context: $browser-font-context) {
+	@return #{$pixels/$context}rem;
+}
+
+/// Convert from pixels to vw
+/// @param {Number} $pixels - pixel value to convert
+/// @param {Number} $context - screen size context, usually and default is 16
+@function vw($pixels, $context: $browser-width-context) {
+	@return #{$pixels/$context*100}vw;
+}
+
+/// Convert from pixels to vw
+/// @param {Number} $pixels - pixel value to convert
+/// @param {Number} $context - screen size context, usually and default is 16
+@function vh($pixels, $context: $browser-height-context) {
+	@return #{$pixels/$context*100}vh;
+}
+
+/// Get color
+/// @param {String} $key - color from $colors variable
+@function color($key: 'primary') {
+	@return map-get($colors, $key);
+}
+
+/// Font weight color
+/// @param {String} $key - type of fint weight
+@function font-weight($key: 'regular') {
+	@return map-get($font-weight, $key);
+}
+
+//GET Z-INDEX
+/// @param {String} $layer - name of layer
+@function z-index($layer) {
+	@if map-has-key($z-indexes, $layer) {
+		@return map-get($z-indexes, $layer);
+	}
+
+	@warn "Unknown `#{$layer}` in $z-layers.";
+	@return null;
+}
+
+//GET fontSize
+/// @param {String} $layer - name of layer
+@function font($type) {
+	@if map-has-key($font-variations, $type) {
+		@return map-get($font-variations, $type);
+	}
+
+	@warn "Unknown `#{$type}` in $font-variations.";
+	@return null;
+}
+
+@function step($key: 'small') {
+	@return map-get($margin, $key);
+}
+
+/// Max Responsive manager.
+/// @param {String} $breakpoint - Breakpoint or value ( 1000px )
+/// @requires $breakpoints
+@mixin respond-to($breakpoint) {
+	$width: map-get($breakpoints, $breakpoint);
+
+	@if not $width {
+		$width: $breakpoint;
+	}
+	@media (max-width: #{$width}) {
+		@content;
+	}
+}
+
+/// Min Responsive manager.
+/// @param {String} $breakpoint - Breakpoint or value ( 1000px )
+/// @requires $breakpoints
+@mixin respond-from($breakpoint) {
+	$width: map-get($breakpoints, $breakpoint);
+
+	@if not $width {
+		$width: $breakpoint;
+	}
+	@media (min-width: #{$width}) {
+		@content;
+	}
+}
+
+/// Helper to clear inner floats
+/// @author Nicolas Gallagher
+/// @link http://nicolasgallagher.com/micro-clearfix-hack/ Micro Clearfix
+@mixin clearfix {
+	&:after {
+		content: ' '; /* Older browser do not support empty content */
+		visibility: hidden;
+		display: block;
+		height: 0;
+		clear: both;
+	}
+}
+
+// helper to create gradients
+// @param {String} $color1 - gradient start color
+// @param {String} $color2 - gradient edn color
+@mixin linear-gradient($color1:#000000, $color2:#FFFFFF) {
+	background-color: $color1;
+	background-image: -webkit-gradient(
+		linear,
+		left top,
+		left bottom,
+		color-stop(0, $color1),
+		color-stop(1, $color2)
+	);
+	background-image: -o-linear-gradient(bottom, $color1 0%, $color2 100%);
+	background-image: -moz-linear-gradient(bottom, $color1 0%, $color2 100%);
+	background-image: -webkit-linear-gradient(bottom, $color1 0%, $color2 100%);
+	background-image: -ms-linear-gradient(bottom, $color1 0%, $color2 100%);
+	background-image: linear-gradient(to bottom, $color1 0%, $color2 100%);
+}
+
+@mixin radial-gradient-center($centerColor, $outerColor, $innerSize, $outerSize) {
+	background-color: $outerColor;
+	background-image: -webkit-gradient(
+		radial,
+		center center,
+		0px,
+		center center,
+		color-stop($innerSize, $centerColor),
+		color-stop($outerSize, $outerColor)
+	);
+	background-image: -webkit-radial-gradient(
+		50% 50%,
+		circle circle,
+		$centerColor $innerSize,
+		$outerColor $outerSize
+	);
+	background-image: -moz-radial-gradient(
+		center,
+		circle cover,
+		$centerColor $innerSize,
+		$outerColor $outerSize
+	);
+	background-image: -o-radial-gradient(
+		center,
+		circle cover,
+		$centerColor $innerSize,
+		$outerColor $outerSize
+	);
+	background: radial-gradient(
+		circle at center,
+		$centerColor $innerSize,
+		$outerColor $outerSize
+	);
+}
+
+@mixin horizontal-left-to-right-linear-gradient($color1:#000000, $color2:#FFFFFF) {
+	background-image: linear-gradient(to left, $color1 0%, $color2 100%);
+}
+
+@mixin horizontal-right-to-left-linear-gradient($color1:#000000, $color2:#FFFFFF) {
+	background-image: linear-gradient(to right, $color1 0%, $color2 100%);
+}
+
+// Retina mixin
+// usage:
+// @include retina {
+//   background-image: url('/assets/images/isomatch_mark@2x.png');
+// }
+@mixin retina {
+	@media only screen and (-webkit-min-device-pixel-ratio: 2),
+		only screen and (min--moz-device-pixel-ratio: 2),
+		only screen and (-o-min-device-pixel-ratio: 2/1),
+		only screen and (min-device-pixel-ratio: 2),
+		only screen and (min-resolution: 192dpi),
+		only screen and (min-resolution: 2dppx) {
+		@content;
+	}
+}
+
+// Text overflow
+// -------------------------
+// Requires inline-block or block for proper styling
+@mixin text-overflow() {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+@mixin text-responsive($fontSize: 4.8rem, $minFonSizePercent: 0.5, $from: 720px, $to: 1920px, $steps: 10) {
+	$widthStep: ($to - $from) / $steps;
+	$sizeStep: (1 - $minFonSizePercent) / $steps;
+
+	//minimal font size;
+	@include respond-from( 0px ) {
+		font-size: $fontSize * $minFonSizePercent;
+	}
+
+	@for $i from 1 through $steps {
+		@include respond-from( $from + ( $widthStep * $i) ) {
+			font-size: $fontSize * ( ($sizeStep * $i) + $minFonSizePercent);
+		}
+	}
+}
+
+@function str-replace($string, $search, $replace: '') {
+	$index: str-index($string, $search);
+
+	@if $index {
+		@return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+	}
+
+	@return $string;
+}
+
+@function strip-units($number) {
+	@return $number / ($number * 0 + 1);
+}
+
+%clearfix {
+	&:before,
+	&:after {
+		content: ' ';
+		display: table;
+	}
+
+	&:after {
+		clear: both;
+	}
+
+	& {
+		*zoom: 1;
+	}
+}
+
+@mixin font-face($name, $path, $weight: null, $style: null) {
+	@font-face {
+		font-family: quote($name);
+		//font-style: $style;
+		font-weight: $weight;
+		src: url(quote($path)) format('ttf');
+	}
+}

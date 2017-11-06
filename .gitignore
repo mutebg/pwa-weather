@@ -1,3 +1,10 @@
 build
 node_modules
 npm-debug.log
+functions/node_modules
+functions/config.json
+functions/firebase-debug.log
+node_modules
+.DS_Store
+/build
+/*.log
