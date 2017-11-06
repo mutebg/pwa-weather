@@ -56,7 +56,7 @@
           .then( data => {
             let title = data.currently.summary + ' ' + Math.round(data.currently.temperature) + '°';
             let body = 'Feels ' + Math.round(data.currently.apparentTemperature) + ' °';
-            if ( data.currently.precipProbability ) {
+            if ( data.currently.precipProbability && data.currently.precipType ) {
               body = Math.round(data.currently.precipProbability * 100) + '% ' + data.currently.precipType + ' - ' + body;
             }
 
@@ -74,7 +74,7 @@
   });
 
   global.onnotificationclick = event => {
-    const url = '<%= api_url %>';
+    const url = '<%= base_url %>';
 
     // Android doesn't close the notification when you click it
     // See http://crbug.com/463146

@@ -43,12 +43,12 @@ class Settings extends Component {
 	}
 
 	onNotificationTimeChange(e) {
-		if (!e.srcElement.value) {
+		if (!e.target.value) {
 			return;
 		}
 		this.setState(
 			{
-				notificationTime: e.srcElement.value
+				notificationTime: e.target.value
 			},
 			() => {
 				Store.set('notification_time', this.state.notificationTime);
@@ -124,6 +124,12 @@ class Settings extends Component {
 	}
 
 	render(props, state) {
+		const options = [];
+		for (let i = 0; i < 24; i++) {
+			const value = (i < 10 ? '0' + i : i) + ':00';
+			options.push(<option value={value}>{value}</option>);
+		}
+
 		return (
 			<div class="Settings content">
 				<div class="Settings__row">
@@ -139,21 +145,18 @@ class Settings extends Component {
 						disabled={state.pushButtonDisabled}
 						onClick={() => this.togglePushSubscribe()}
 					>
-						{' '}
 						{state.pushButtonLabel}
 					</button>
 				</div>
 				<div class="Settings__row Settings__row--time">
-					<button class="btn btn--primary" disabled={state.pushButtonDisabled}>
-						Notification time: {state.notificationTime}
-					</button>
-					<input
-						type="time"
+					<select
 						value={state.notificationTime}
 						onChange={this.onNotificationTimeChange}
-						class="Settings__time"
-						disabled={state.pushButtonDisabled}
-					/>
+						class="btn btn--primary Settings__time"
+						disabled={!state.pushEnabled}
+					>
+						{options}
+					</select>
 				</div>
 				{this.renderPaymentButton()}
 				{this.renderPaymentMessage()}

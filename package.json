@@ -4,9 +4,10 @@
 	"license": "MIT",
 	"scripts": {
 		"start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
-		"build": "preact build --template src/assets/template.html --no-prerender",
+		"build":
+			"preact build --template src/assets/template.html --no-prerender --service-worker false && node sw-generator.js",
 		"serve":
-			"preact build --template src/assets/template.html --no-prerender && preact serve",
+			"preact build --template src/assets/template.html --no-prerender --service-worker false && preact serve",
 		"dev": "preact watch --template src/assets/template.html",
 		"lint": "eslint src"
 	},
@@ -24,6 +25,7 @@
 		"eslint": "^4.5.0",
 		"eslint-config-synacor": "^1.1.0",
 		"if-env": "^1.0.0",
+		"lodash": "^4.17.4",
 		"node-sass": "^4.6.0",
 		"preact-cli": "^2.0.2",
 		"sass-loader": "^6.0.6"

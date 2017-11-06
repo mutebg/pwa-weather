@@ -25,6 +25,16 @@
 		<%= htmlWebpackPlugin.options.ssr({
 			url: '/'
 		}) %>
+		<div style="margin-top: 25px">
+      <div class="Today__summary">Loading</div>
+      <div class="Today__icon">
+        <div class="icon icon--loading">
+          <div class="circle circle-s"></div>
+          <div class="h-line h-line--4 h-size-h h-left"></div>
+          <div class="h-line h-line--5 h-size-h h-right"></div>
+        </div>
+      </div>
+    </div>
 		<script defer src="<%= htmlWebpackPlugin.files.chunks['bundle'].entry %>"></script>
 		<script>window.fetch||document.write('<script src="<%= htmlWebpackPlugin.files.chunks["polyfills"].entry %>"><\/script>')</script>
 	</body>

@@ -34,7 +34,7 @@ const defaultsValues = {
 	}
 };
 
-const errorMessage = err => {
+const errorMessage = (err, res) => {
 	res.status(400).send(err.message);
 };
 
@@ -45,7 +45,7 @@ app.get('/weather', (req, res) => {
 		.then(response => {
 			res.json(response);
 		})
-		.catch(errorMessage);
+		.catch(err => errorMessage(err, res));
 });
 
 app.use('/geolocation', (req, res) => {
@@ -68,7 +68,7 @@ app.post('/push/subscribe', (req, res) => {
 		.then(() => {
 			res.status(200).send({ success: true });
 		})
-		.catch(errorMessage);
+		.catch(err => errorMessage(err, res));
 });
 
 // UNSUBSCRIBE FOR PUSH NOTIFICATIONS
@@ -82,7 +82,7 @@ app.delete('/push/subscribe', (req, res) => {
 			});
 			res.status(200).send({ success: true });
 		})
-		.catch(errorMessage);
+		.catch(err => errorMessage(err, res));
 });
 
 // UPDATE SUBSCRIBTION ( USEALY NOTIFICATION TIME )
@@ -101,7 +101,27 @@ app.patch('/push/subscribe', (req, res) => {
 			});
 			res.status(200).send({ success: true });
 		})
-		.catch(errorMessage);
+		.catch(err => errorMessage(err, res));
+});
+
+app.get('/push/send', (req, res) => {
+	webpush.setGCMAPIKey(GCMApiKey);
+
+	const currentHour = new Date().getHours();
+	subscription
+		.where(
+			'time',
+			'==',
+			currentHour < 10 ? '0' + currentHour + ':00' : currentHour + ':00'
+		)
+		.get()
+		.then(snapshot => {
+			snapshot.forEach(doc => {
+				webpush.sendNotification(doc.data().subscription);
+			});
+			res.status(200).send({ success: true, hour: currentHour });
+		})
+		.catch(err => errorMessage(err, res));
 });
 
 // Expose the API as a function

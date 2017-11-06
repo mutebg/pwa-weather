@@ -10,6 +10,10 @@ import Icon from './components/icon';
 import Store from './utils/store';
 import { get } from './utils/api';
 import { getCurrentPosition } from './utils/location';
+// import Today from 'async!./components/todaypage';
+// import Daily from 'async!./components/dailypage';
+// import Hourly from 'async!./components/hourlypage';
+// import Settings from 'async!./components/settings';
 
 import './scss/reset.scss';
 import './scss/index.scss';
@@ -40,7 +44,7 @@ export default class Main extends Component {
 			// save current user location
 			Store.set('location', { latitude, longitude });
 
-			this.setState({ isUpdating: true });
+			this.setState({ isUpdating: true, hasPermission: true });
 
 			// get weather forecast for current location
 			const data = await get(
@@ -79,6 +83,7 @@ export default class Main extends Component {
 			data: null,
 			currentURL: '/',
 			isUpdating: false,
+			hasPermission: true,
 			error: null,
 			isOffline: false
 		};
@@ -91,8 +96,32 @@ export default class Main extends Component {
 		// load local data
 		Store.get('weather').then(data => this.setState({ data }));
 
-		// load remote data
-		this.loadRemoteData();
+		// if permissions api exists try first to ask user for Permission
+		// otherwise just ask for for location
+		if (typeof window !== 'undefined' && 'permissions' in navigator) {
+			navigator.permissions.query({ name: 'geolocation' }).then(result => {
+				if (result.state === 'granted') {
+					this.setState({
+						hasPermission: true
+					});
+					this.loadRemoteData();
+				}
+				else if (result.state === 'prompt') {
+					this.setState({
+						hasPermission: false
+					});
+				}
+				else {
+					// Permission was denied.
+					// this fails to location based on IP
+					this.loadRemoteData();
+				}
+			});
+		}
+		else {
+			// safari does not support permission api so just ask for location
+			this.loadRemoteData();
+		}
 
 		addEventListener('online', this.updateOnlineStatus);
 		addEventListener('offline', this.updateOnlineStatus);
@@ -109,7 +138,30 @@ export default class Main extends Component {
 		);
 	}
 
+	renderNoPermission() {
+		const reqAccess = () => this.loadRemoteData();
+		return (
+			<div style={{ marginTop: 25 }} onClick={reqAccess}>
+				<div class="Today__summary">Access location</div>
+				<div class="Today__icon">
+					<Icon name="loading" />
+				</div>
+				<div class="LocationAccess">
+					<p>
+						Let me access your location in order to give you correct forecast
+					</p>
+					<button class="btn btn--primary">Enable location</button>
+					<button class="btn">Not now</button>
+				</div>
+			</div>
+		);
+	}
+
 	render(props, state) {
+		if (!state.hasPermission) {
+			return this.renderNoPermission();
+		}
+
 		if (!state.data) {
 			return this.renderLoading();
 		}
@@ -144,8 +196,15 @@ export default class Main extends Component {
 	}
 }
 
-//const container = document.getElementById('app');
-//container.innerHTML = '';
-//render(<Main />, container);
-
-//require('./manifest.json');
+if (process.env.NODE_ENV === 'production') {
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker
+			.register('serv-worker.js')
+			.then(registration => {
+				console.log('SW registerd');
+			})
+			.catch(error => {
+				console.log('SW fail to register', error);
+			});
+	}
+}

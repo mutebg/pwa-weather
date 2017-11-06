@@ -1,6 +1,6 @@
 import { get } from './api';
 
-export async function getCurrentPosition() {
+export function getCurrentPosition() {
 	return new Promise((resolve, reject) => {
 		navigator.geolocation.getCurrentPosition(
 			position => {
