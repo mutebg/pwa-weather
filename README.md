@@ -1,5 +1,5 @@
 # WillRain.Today
-is simple __progressive web app__ created just for expererimenting with latest web technologies as:
+is simple a __progressive web app__ created just for expererimenting with latest web technologies as:
 - ServiecWorker for offline & push notifications
 - PaymentRequest just for fun
 - Web App Manifest
