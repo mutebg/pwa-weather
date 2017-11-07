@@ -38,7 +38,7 @@ class Settings extends Component {
 		}
 
 		Store.get('notification_time').then(notificationTime =>
-			this.setState({ notificationTime: notificationTime || '08:00' })
+			this.setState({ notificationTime: notificationTime || 8 })
 		);
 	}
 
@@ -125,9 +125,9 @@ class Settings extends Component {
 
 	render(props, state) {
 		const options = [];
-		for (let i = 0; i < 24; i++) {
-			const value = (i < 10 ? '0' + i : i) + ':00';
-			options.push(<option value={value}>{value}</option>);
+		for (let value = 0; value < 24; value++) {
+			const label = (value < 10 ? '0' + value : value) + ':00';
+			options.push(<option value={value}>{label}</option>);
 		}
 
 		return (

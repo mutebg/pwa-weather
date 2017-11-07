@@ -27,7 +27,8 @@ if (functions.config().env) {
 const subscription = admin.firestore().collection('subscription');
 
 const defaultsValues = {
-	time: '08:00',
+	time: 8,
+	timezone: 0,
 	location: {
 		latitude: 52.379473,
 		longitude: 5.215532
@@ -60,9 +61,13 @@ app.use('/geolocation', (req, res) => {
 
 // SUBSCRIBE FOR PUSH NOTIFICATIONS
 app.post('/push/subscribe', (req, res) => {
+	const timezone = req.body.timezone || defaultsValues.timezone;
+	const time = req.body.time || defaultsValues.time;
 	subscription
 		.add({
-			time: req.body.time || defaultsValues.time,
+			time,
+			timezone,
+			computed_time: time + timezone,
 			subscription: req.body.subscription
 		})
 		.then(() => {
@@ -87,9 +92,13 @@ app.delete('/push/subscribe', (req, res) => {
 
 // UPDATE SUBSCRIBTION ( USEALY NOTIFICATION TIME )
 app.patch('/push/subscribe', (req, res) => {
+	const timezone = req.body.timezone || defaultsValues.timezone;
+	const time = req.body.time || defaultsValues.time;
 	const update = {
 		subscription: req.body.subscription,
-		time: req.body.time || defaultsValues.time
+		time,
+		timezone,
+		computed_time: time + timezone
 	};
 
 	subscription
@@ -107,13 +116,10 @@ app.patch('/push/subscribe', (req, res) => {
 app.get('/push/send', (req, res) => {
 	webpush.setGCMAPIKey(GCMApiKey);
 
-	const currentHour = new Date().getHours();
+	const date = new Date();
+	const currentHour = date.getHours() + date.getTimezoneOffset() / 60;
 	subscription
-		.where(
-			'time',
-			'==',
-			currentHour < 10 ? '0' + currentHour + ':00' : currentHour + ':00'
-		)
+		.where('computed_time', '==', currentHour)
 		.get()
 		.then(snapshot => {
 			snapshot.forEach(doc => {
