@@ -2,12 +2,10 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const request = require('request');
 const webpush = require('web-push');
 const where = require('node-where');
 const _ = require('lodash');
-const localConfig = require('./config.json');
 
 const app = express();
 
@@ -16,13 +14,8 @@ admin.initializeApp(functions.config().firebase);
 app.use(cors());
 app.enable('trust proxy');
 
-let darkSkyApiKey = localConfig.env.dark_sky_key;
-let GCMApiKey = localConfig.env.gcm_key;
-
-if (functions.config().env) {
-	darkSkyApiKey = functions.config().env.dark_sky_key;
-	GCMApiKey = functions.config().env.gcm_key;
-}
+const darkSkyApiKey = functions.config().env.dark_sky_key;
+const GCMApiKey = functions.config().env.gcm_key;
 
 const subscription = admin.firestore().collection('subscription');
 
