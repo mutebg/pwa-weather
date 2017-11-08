@@ -9,4 +9,4 @@ is simple a __progressive web app__ created just for expererimenting with latest
 
 ### TODO
 - Credential Management API - so users can sign-in/out
-- BackgroundSync - sync weather data in background ( periodicSync )
+- BackgroundSync - sync weather data in background ( periodicSync ).
