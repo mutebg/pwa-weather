@@ -1,171 +1,172 @@
+@import '../../scss/_mixins';
+
 $height: 34px;
 
 .HourlyBar {
+	&__hours,
+	&__values,
+	&__scale,
+	&__summaries {
+		float: left;
 
-  &__hours,
-  &__values,
-  &__scale,
-  &__summaries {
-    float: left;
+		div {
+			height: $height;
+			display: flex;
+			align-items: center;
+		}
 
-    div {
-      height: $height;
-      display: flex;
-      align-items: center;
-    }
+		@for $i from 2 through 48 {
+			.size-#{$i} {
+				height: $height * $i;
+			}
+		}
+	}
 
-    @for $i from 2 through 48 {
-      .size-#{$i} {
-        height: $height * $i
-      }
-    }
-  }
+	&__hours {
+		width: calc(50% - 100px);
+		div {
+			justify-content: flex-end;
+			background: color('bg');
 
-  &__hours {
-    width: calc( 50% - 100px);
-    div {
-      justify-content: flex-end;
-      background: color('bg');
+			.HourlyBar--transition & {
+				animation: 1s ease-in-out move-hours;
+			}
+		}
+	}
 
-      .HourlyBar--transition & {
-        animation: 1s ease-in-out move-hours;
-      }
-    }
-  }
+	&__values {
+		width: 80px;
+		div {
+			justify-content: flex-end;
+			padding-right: 20px;
 
-  &__values {
-    width: 80px;
-    div {
-      justify-content: flex-end;
-      padding-right: 20px;
+			.HourlyBar--transition & {
+				animation: 1s linear hide-values;
+			}
+		}
+	}
 
-      .HourlyBar--transition & {
-        animation: 1s linear hide-values;
-      }
-    }
-  }
+	&__hours,
+	&__values {
+		div {
+			@for $i from 1 through 50 {
+				&:nth-last-of-type(#{$i}) {
+					animation-delay: ($i * 7) + 0ms;
+				}
+			}
+		}
+	}
 
-  &__hours,
-  &__values {
-    div {
-      @for $i from 1 through 50 {
-        &:nth-last-of-type(#{$i}) {
-          animation-delay: ( $i * 7 ) + 0ms;
-        }
-      }
-    }
-  }
+	&__scale {
+		width: 40px;
+		background: #fff;
+		div {
+			position: relative;
+			&:after {
+				content: '';
+				position: absolute;
+				top: calc(50% - 6px);
+				left: calc(100% - 6px);
+				width: 12px;
+				height: 12px;
+				transform: rotate(45deg);
+				background: currentColor;
+			}
+		}
+	}
 
-  &__scale {
-    width: 40px;
-    background: #fff;
-    div {
-      position: relative;
-      &:after {
-        content: "";
-        position: absolute;
-        top: calc(50% - 6px);
-        left: calc( 100% - 6px );
-        width: 12px;
-        height: 12px;
-        transform: rotate(45deg);
-        background: currentColor;
-      }
-    }
-  }
+	&__summaries {
+		width: calc(50% - 20px);
+		div {
+			padding-left: 20px;
+		}
+	}
 
-  &__summaries {
-    width: calc( 50% - 20px);
-    div {
-      padding-left: 20px;
-    }
-  }
+	&__nav {
+		display: flex;
+		clear: both;
+		padding: 20px 0;
 
-  &__nav {
-    display: flex;
-    clear: both;
-    padding: 20px 0;
+		button {
+			font-size: 16px;
+			padding: 10px;
+			flex: 1;
+			text-transform: uppercase;
 
-    button {
-      font-size: 16px;
-      padding: 10px;
-      flex: 1;
-      text-transform: uppercase;
-
-      &.selected {
-        color: color('primary');
-      }
-    }
-  }
+			&.selected {
+				color: color('primary');
+			}
+		}
+	}
 }
 
 .breezy,
 .clear {
-  background-color: #EEEEF5;
-  color: #EEEEF5;
+	background-color: #eeeef5;
+	color: #eeeef5;
 }
 
 .partly-cloudy {
-  background-color: #d5dae2;
-  color: #d5dae2;
+	background-color: #d5dae2;
+	color: #d5dae2;
 }
 
 .mostly-cloudy {
-  background-color: #c8cdd4;
-  color: #c8cdd4;
+	background-color: #c8cdd4;
+	color: #c8cdd4;
 }
 
 .overcast {
-  background-color: #b6bfcb;
-  color: #b6bfcb;
+	background-color: #b6bfcb;
+	color: #b6bfcb;
 }
 
 .drizzle {
-  background-color: #91b6e6;
-  color: #91b6e6;
+	background-color: #91b6e6;
+	color: #91b6e6;
 }
 
 .light-rain {
-  background-color: #80a5d6;
-  color: #80a5d6;
+	background-color: #80a5d6;
+	color: #80a5d6;
 }
 
 .rain {
-  background-color: #4a80c7;
-  color: #4a80c7;
+	background-color: #4a80c7;
+	color: #4a80c7;
 }
 
 .heavy-rain {
-  background-color: #3267ad;
-  color: #3267ad;
+	background-color: #3267ad;
+	color: #3267ad;
 }
 
 @keyframes move-hours {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  42% {
-    transform: translate3d(70px, 0, 0);
-  }
-  58% {
-    transform: translate3d(70px, 0, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
+	0% {
+		transform: translate3d(0, 0, 0);
+	}
+	42% {
+		transform: translate3d(70px, 0, 0);
+	}
+	58% {
+		transform: translate3d(70px, 0, 0);
+	}
+	100% {
+		transform: translate3d(0, 0, 0);
+	}
 }
 
 @keyframes hide-values {
-  0% {
-    opacity: 1;
-  }
-  25% {
-    opacity: 0;
-  }
-  75% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+	0% {
+		opacity: 1;
+	}
+	25% {
+		opacity: 0;
+	}
+	75% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }

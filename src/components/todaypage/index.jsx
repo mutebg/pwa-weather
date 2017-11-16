@@ -65,8 +65,8 @@ export default function({ data, isUpdating }) {
 			<HourlyBar data={hours.slice(0, hourLimit)} />
 
 			<div class="Today__sun">
-				Sunrise {`${sunriseTime.getHours()}:${sunriseTime.getMinutes()}`} |
-				Sunset {`${sunsetTime.getHours()}:${sunsetTime.getMinutes()}`}
+				Sunrise {`${formatDate(sunriseTime)}`} | Sunset{' '}
+				{`${formatDate(sunsetTime)}`}
 			</div>
 		</div>
 	);
