@@ -3,6 +3,18 @@ import Wind from '../wind';
 import './style.scss';
 
 class HourlyBar extends Component {
+	changeSelected(selected) {
+		this.setState({ transition: true });
+
+		setTimeout(() => {
+			this.setState({ selected });
+		}, 500);
+
+		setTimeout(() => {
+			this.setState({ transition: false });
+		}, 1000);
+	}
+
 	constructor(props) {
 		super(props);
 
@@ -14,18 +26,6 @@ class HourlyBar extends Component {
 		this.navs = ['temp', 'precip', 'wind', 'humidity'];
 
 		this.changeSelected = this.changeSelected.bind(this);
-	}
-
-	changeSelected(selected) {
-		this.setState({ transition: true });
-
-		setTimeout(() => {
-			this.setState({ selected });
-		}, 500);
-
-		setTimeout(() => {
-			this.setState({ transition: false });
-		}, 1000);
 	}
 
 	renderNav() {
@@ -85,7 +85,7 @@ class HourlyBar extends Component {
 		));
 
 		const scales = groups.map(item => {
-			const summaryClass = item.summary.toLowerCase().replace(' ', '-');
+			const summaryClass = item.summary.toLowerCase().replace(/ /g, '-');
 			return <div class={`size-${item.value} ${summaryClass}`} />;
 		});
 

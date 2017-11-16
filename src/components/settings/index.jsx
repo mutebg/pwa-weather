@@ -10,38 +10,6 @@ import Store from '../../utils/store';
 import './style.scss';
 
 class Settings extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			pushSubscription: null,
-			pushEnabled: false,
-			pushButtonLabel: 'Enable Push Messages',
-			pushButtonDisabled: false,
-			notificationTime: '08:00',
-			showPaymentBtn: false,
-			successPayment: false,
-			paymentData: null
-		};
-
-		this.togglePushSubscribe = this.togglePushSubscribe.bind(this);
-		this.onNotificationTimeChange = this.onNotificationTimeChange.bind(this);
-		this.makePayment = this.makePayment.bind(this);
-	}
-
-	componentDidMount() {
-		initialiseState(this);
-
-		if ('PaymentRequest' in window) {
-			this.setState({
-				showPaymentBtn: true
-			});
-		}
-
-		Store.get('notification_time').then(notificationTime =>
-			this.setState({ notificationTime: notificationTime || 8 })
-		);
-	}
-
 	onNotificationTimeChange(e) {
 		if (!e.target.value) {
 			return;
@@ -86,6 +54,38 @@ class Settings extends Component {
 					paymentData: err
 				});
 			});
+	}
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			pushSubscription: null,
+			pushEnabled: false,
+			pushButtonLabel: 'Enable Push Messages',
+			pushButtonDisabled: false,
+			notificationTime: '08:00',
+			showPaymentBtn: false,
+			successPayment: false,
+			paymentData: null
+		};
+
+		this.togglePushSubscribe = this.togglePushSubscribe.bind(this);
+		this.onNotificationTimeChange = this.onNotificationTimeChange.bind(this);
+		this.makePayment = this.makePayment.bind(this);
+	}
+
+	componentDidMount() {
+		initialiseState(this);
+
+		if ('PaymentRequest' in window) {
+			this.setState({
+				showPaymentBtn: true
+			});
+		}
+
+		Store.get('notification_time').then(notificationTime =>
+			this.setState({ notificationTime: notificationTime || 8 })
+		);
 	}
 
 	renderPaymentButton() {
