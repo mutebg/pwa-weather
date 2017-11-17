@@ -1,4 +1,5 @@
 const BabiliPlugin = require('babili-webpack-plugin');
+const CriticalPlugin = require('webpack-plugin-critical').CriticalPlugin;
 
 export default (config, env, helpers) => {
 	//Remove uglify plugin and add BabiliPlugin
@@ -6,6 +7,17 @@ export default (config, env, helpers) => {
 	if (uglify) {
 		config.plugins.splice(uglify.index, 1);
 		config.plugins.push(new BabiliPlugin({}, { sourceMap: false }));
+	}
+
+	if (env.isProd) {
+		config.plugins.push(
+			new CriticalPlugin({
+				src: 'index.html',
+				inline: true,
+				minify: true,
+				dest: 'index.html'
+			})
+		);
 	}
 
 	// Disabled CSS modules
