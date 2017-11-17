@@ -18,6 +18,11 @@ import { getCurrentPosition } from './utils/location';
 import './scss/reset.scss';
 import './scss/index.scss';
 
+//setup the theme from very beginning
+Store.get('theme').then(theme => {
+	document.body.className = theme + '-theme';
+});
+
 export default class Main extends Component {
 	onRouteChange() {
 		const pageElement = document.querySelector('.page');

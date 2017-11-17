@@ -31,6 +31,15 @@ class Settings extends Component {
 		);
 	}
 
+	onThemeChange(e) {
+		const theme = e.target.value;
+		this.setState({
+			theme
+		});
+		Store.set('theme', theme);
+		document.body.className = theme + '-theme';
+	}
+
 	togglePushSubscribe() {
 		if (this.state.pushEnabled) {
 			unsubscribe(this);
@@ -63,13 +72,15 @@ class Settings extends Component {
 			pushEnabled: false,
 			pushButtonLabel: 'Enable Push Messages',
 			pushButtonDisabled: false,
-			notificationTime: '08:00',
+			notificationTime: 8,
 			showPaymentBtn: false,
 			successPayment: false,
-			paymentData: null
+			paymentData: null,
+			theme: 'light'
 		};
 
 		this.togglePushSubscribe = this.togglePushSubscribe.bind(this);
+		this.onThemeChange = this.onThemeChange.bind(this);
 		this.onNotificationTimeChange = this.onNotificationTimeChange.bind(this);
 		this.makePayment = this.makePayment.bind(this);
 	}
@@ -85,6 +96,10 @@ class Settings extends Component {
 
 		Store.get('notification_time').then(notificationTime =>
 			this.setState({ notificationTime: notificationTime || 8 })
+		);
+
+		Store.get('theme').then(theme =>
+			this.setState({ theme: theme || 'light' })
 		);
 	}
 
@@ -124,11 +139,16 @@ class Settings extends Component {
 	}
 
 	render(props, state) {
-		const options = [];
+		const optionsTime = [];
 		for (let value = 0; value < 24; value++) {
 			const label = (value < 10 ? '0' + value : value) + ':00';
-			options.push(<option value={value}>{label}</option>);
+			optionsTime.push(<option value={value}>{label}</option>);
 		}
+
+		const optionsTheme = [
+			<option value="dark">Dark theme</option>,
+			<option value="light">Light theme</option>
+		];
 
 		return (
 			<div class="Settings content">
@@ -155,7 +175,16 @@ class Settings extends Component {
 						class="btn btn--primary Settings__time"
 						disabled={!state.pushEnabled}
 					>
-						{options}
+						{optionsTime}
+					</select>
+				</div>
+				<div class="Settings__row">
+					<select
+						class="btn btn--primary Settings__time"
+						value={state.theme}
+						onChange={this.onThemeChange}
+					>
+						{optionsTheme}
 					</select>
 				</div>
 				{this.renderPaymentButton()}
