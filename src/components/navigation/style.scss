@@ -5,6 +5,20 @@
 	text-align: center;
 	justify-content: center;
 
+	height: 60px;
+	background: var(--color-bg-high);
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 99;
+
+	@include respond-from('sm') {
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+		top: 0;
+		bottom: auto;
+	}
+
 	&__item {
 		flex: 1;
 		text-transform: uppercase;
@@ -24,7 +38,7 @@
 			padding-bottom: 120%;
 			margin-left: -60%;
 			margin-top: -60%;
-			background: rgba(color('primary'), 0.5);
+			background: var(--color-primary);
 			border-radius: 100%;
 			opacity: 0.6;
 			transform: scale(0);
@@ -43,7 +57,7 @@
 		}
 
 		&--selected {
-			color: color('primary');
+			color: var(--color-primary);
 		}
 	}
 
