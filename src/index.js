@@ -153,7 +153,8 @@ export default class Main extends Component {
 				</div>
 				<div class="LocationAccess">
 					<p>
-						Let me access your location in order to give you correct forecast
+						Let me access your location in order to give you correct weather
+						forecast
 					</p>
 					<button class="btn btn--primary">Enable location</button>
 					<button class="btn">Not now</button>
@@ -180,8 +181,8 @@ export default class Main extends Component {
 		return (
 			<div class="main">
 				<div class="page">
-					{<Alert message={state.error} />}
-					{state.isOffline ? <Alert message={'You are offline'} /> : null}
+					{state.error && <Alert message={state.error} />}
+					{state.isOffline && <Alert message={'You are offline'} />}
 					<Router onChange={this.onRouteChange}>
 						<Today data={currently} path="/" isUpdating={state.isUpdating} />
 						<Hourly {...hourly} path="/hourly" />
