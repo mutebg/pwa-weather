@@ -2,15 +2,22 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "dependencies": {
-    "body-parser": "^1.17.2",
+    "body-parser": "^1.18.3",
     "cors": "^2.8.4",
-    "express": "^4.15.3",
-    "firebase-admin": "~5.4.0",
-    "firebase-functions": "^0.7.0",
-    "lodash": "^4.17.2",
+    "express": "^4.16.3",
+    "firebase-admin": "~6.0.0",
+    "firebase-functions": "^2.0.5",
+    "lodash": "^4.17.11",
     "node-where": "^1.1.0",
-    "request": "^2.81.0",
-    "web-push": "^3.2.0"
+    "request": "^2.88.0",
+    "web-push": "^3.3.2"
   },
-  "private": true
+  "private": true,
+  "scripts": {
+    "serve": "firebase serve --only functions",
+    "shell": "firebase experimental:functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  }
 }

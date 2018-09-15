@@ -9,13 +9,15 @@ const _ = require('lodash');
 
 const app = express();
 
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp();
 
 app.use(cors());
 app.enable('trust proxy');
 
-const darkSkyApiKey = functions.config().env.dark_sky_key;
-const GCMApiKey = functions.config().env.gcm_key;
+const config = functions.config() ? functions.config() : process.env;
+
+const darkSkyApiKey = config.env.dark_sky_key;
+const GCMApiKey = config.env.gcm_key;
 
 const subscription = admin.firestore().collection('subscription');
 
@@ -29,7 +31,7 @@ const defaultsValues = {
 };
 
 const errorMessage = (err, res) => {
-	res.status(400).send(err.message);
+	res.status(400).send(err);
 };
 
 app.get('/weather', (req, res) => {

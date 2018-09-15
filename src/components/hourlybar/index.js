@@ -55,12 +55,13 @@ class HourlyBar extends Component {
 				case 'wind':
 					return (
 						<div>
-							{Math.round(item.windSpeed)}m/s
+							{Math.round(item.windSpeed)}
+							m/s
 							<Wind rotate={item.windBearing} size="14" />
 						</div>
 					);
 				case 'humidity':
-					return <div>{item.humidity}%</div>;
+					return <div>{Math.round(item.humidity * 100)}%</div>;
 				default:
 					return null;
 			}

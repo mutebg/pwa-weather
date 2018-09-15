@@ -83,12 +83,16 @@ export function subscribe(react) {
 		pushButtonDisabled: true
 	});
 
+	console.log('step 1');
+
 	navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
+		console.log('step 2');
 		serviceWorkerRegistration.pushManager
 			.subscribe({
 				userVisibleOnly: true
 			})
 			.then(subscription => {
+				console.log('step 3');
 				// The subscription was successful
 				react.setState({
 					pushEnabled: true,
@@ -106,6 +110,7 @@ export function subscribe(react) {
 				);
 			})
 			.catch(e => {
+				console.log('step 4');
 				if (Notification.permission === 'denied') {
 					// The user denied the notification permission which
 					// means we failed to subscribe and the user will need

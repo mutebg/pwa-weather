@@ -19,24 +19,24 @@
     "build/*"
   ],
   "devDependencies": {
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-preset-babili": "^0.1.4",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-minify": "^0.2.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-minify": "^0.4.3",
     "babili-webpack-plugin": "^0.1.2",
-    "eslint": "^4.5.0",
-    "eslint-config-synacor": "^1.1.0",
-    "if-env": "^1.0.0",
-    "lodash": "^4.17.4",
-    "node-sass": "^4.6.0",
-    "preact-cli": "^2.0.2",
-    "sass-loader": "^6.0.6",
+    "eslint": "^5.6.0",
+    "eslint-config-synacor": "^3.0.3",
+    "if-env": "^1.0.4",
+    "lodash": "^4.17.11",
+    "node-sass": "^4.9.3",
+    "preact-cli": "^2.2.1",
+    "sass-loader": "^7.1.0",
     "webpack-plugin-critical": "^1.0.0"
   },
   "dependencies": {
-    "idb-keyval": "^2.3.0",
-    "preact": "^8.2.1",
-    "preact-compat": "^3.17.0",
-    "preact-router": "^2.5.5"
+    "idb-keyval": "^2.5.1",
+    "preact": "^8.3.1",
+    "preact-compat": "^3.18.4",
+    "preact-router": "^2.6.1"
   }
 }
