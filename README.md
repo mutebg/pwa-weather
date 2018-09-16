@@ -4,7 +4,7 @@
 
 WillRain.today is a simple **progressive web app** created just for fun & expererimenting with latest web technologies such as:
 
-- [ServiecWorker for offline & push notifications](https://developers.google.com/web/fundamentals/primers/service-workers/)
+- [ServiceWorker for offline & push notifications](https://developers.google.com/web/fundamentals/primers/service-workers/)
 - [PaymentRequest API](https://developers.google.com/web/fundamentals/payments/)
 - [Web App Manifest](https://developers.google.com/web/fundamentals/web-app-manifest/)
 - IndexDB for storing the data localy
