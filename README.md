@@ -1,8 +1,8 @@
 # WillRain.Today
 
-![WillRain.today dark theeme](https://i.makeagif.com/media/11-19-2017/MFh70T.gif)
+![WillRain.today dark theme](https://i.imgur.com/mIKXDbc.png)
 
-WillRain.today is a simple **progressive web app** created just for fun & expererimenting with latest web technologies such as:
+WillRain.today is a simple **progressive web app** created just for fun & experimenting with latest web technologies such as:
 
 - [ServiceWorker for offline & push notifications](https://developers.google.com/web/fundamentals/primers/service-workers/)
 - [PaymentRequest API](https://developers.google.com/web/fundamentals/payments/)
